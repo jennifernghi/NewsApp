@@ -18,7 +18,7 @@ import java.util.List;
  */
 
 public class NewsAdapter extends ArrayAdapter<News> {
-    static class ViewHolder{
+    static class ViewHolder {
         private ImageView newsThumbnailImageView;
         private TextView headLineTextView;
         private TextView contributorTextView;
@@ -35,13 +35,13 @@ public class NewsAdapter extends ArrayAdapter<News> {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-       if(convertView==null){
-           convertView = LayoutInflater.from(getContext()).inflate(R.layout.news_list_item_view,parent,false);
-       }
+        if (convertView == null) {
+            convertView = LayoutInflater.from(getContext()).inflate(R.layout.news_list_item_view, parent, false);
+        }
         ViewHolder viewHolder = new ViewHolder();
         News currentNews = getItem(position);
 
-        viewHolder.newsThumbnailImageView=(ImageView) convertView.findViewById(R.id.news_thumbnail);
+        viewHolder.newsThumbnailImageView = (ImageView) convertView.findViewById(R.id.news_thumbnail);
         viewHolder.headLineTextView = (TextView) convertView.findViewById(R.id.headline);
         viewHolder.contributorTextView = (TextView) convertView.findViewById(R.id.contributor);
         viewHolder.publishedDateTextView = (TextView) convertView.findViewById(R.id.published_date);

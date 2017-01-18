@@ -20,14 +20,16 @@ import java.util.ArrayList;
 
 public abstract class AbstractFragment extends Fragment {
     final String LOG_TAG = AbstractFragment.class.getSimpleName();
+
     static class ViewHolder {
         private ListView listView;
         private View rootView;
     }
 
-    public AbstractFragment(){
+    public AbstractFragment() {
         Log.i(LOG_TAG, "constructor");
     }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Log.i(LOG_TAG, "onCreateView");

@@ -9,6 +9,7 @@ import com.example.android.newsapp.R;
 import com.example.android.newsapp.adapters.ViewPagerAdapter;
 
 public class MainActivity extends AppCompatActivity {
+    final static String LOG_TAG = MainActivity.class.getSimpleName();
 
     static class ViewHolder {
         private TabLayout tabLayout;

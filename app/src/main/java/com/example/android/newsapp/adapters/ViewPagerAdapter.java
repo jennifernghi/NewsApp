@@ -4,7 +4,6 @@ import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.ViewPager;
 
 import com.example.android.newsapp.R;
 import com.example.android.newsapp.activities.SportFragment;
@@ -20,20 +19,22 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
 
     Context context;
     String[] pageTitle;
+
     public ViewPagerAdapter(FragmentManager fm, Context context) {
         super(fm);
-        this.context=context;
+        this.context = context;
         pageTitle = context.getResources().getStringArray(R.array.sections);
     }
+
     @Override
     public Fragment getItem(int position) {
-        if(position==0){
+        if (position == 0) {
             return new USFragment();
-        }else if(position==1){
+        } else if (position == 1) {
             return new WorldFragment();
-        }else if (position==2){
+        } else if (position == 2) {
             return new TechFragment();
-        }else{
+        } else {
             return new SportFragment();
         }
     }
@@ -45,13 +46,13 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public CharSequence getPageTitle(int position) {
-        if(position==0){
+        if (position == 0) {
             return pageTitle[0];
-        }else if(position==1){
+        } else if (position == 1) {
             return pageTitle[1];
-        }else if (position==2){
+        } else if (position == 2) {
             return pageTitle[2];
-        }else{
+        } else {
             return pageTitle[3];
         }
     }

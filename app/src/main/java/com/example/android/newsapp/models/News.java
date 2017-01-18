@@ -1,9 +1,6 @@
 package com.example.android.newsapp.models;
 
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-
-import java.util.Date;
 
 /**
  * Created by jennifernghinguyen on 1/17/17.
@@ -18,46 +15,51 @@ public class News {
     private String contributor;
     private Bitmap thumbnail;
 
-    public News(String headLine, String section, String publishedDate, String trailText, String webUrl, String contributor, Bitmap thumbnail){
+    public News(String headLine, String section, String publishedDate, String trailText, String webUrl, String contributor, Bitmap thumbnail) {
         this.headLine = headLine;
-        this.section=section;
-        this.publishedDate=publishedDate;
-        this.trailText=trailText;
-        this.webUrl=webUrl;
+        this.section = section;
+        this.publishedDate = publishedDate;
+        this.trailText = trailText;
+        this.webUrl = webUrl;
         this.contributor = contributor;
-        this.thumbnail=thumbnail;
-    }
-    public News(String headLine, String section, String publishedDate, String trailText, String webUrl, String contributor){
-        this.headLine = headLine;
-        this.section=section;
-        this.publishedDate=publishedDate;
-        this.trailText=trailText;
-        this.webUrl=webUrl;
-        this.contributor = contributor;
-        this.thumbnail= null;
+        this.thumbnail = thumbnail;
     }
 
-    public String getHeadLine(){return this.headLine;}
+    public News(String headLine, String section, String publishedDate, String trailText, String webUrl, String contributor) {
+        this.headLine = headLine;
+        this.section = section;
+        this.publishedDate = publishedDate;
+        this.trailText = trailText;
+        this.webUrl = webUrl;
+        this.contributor = contributor;
+        this.thumbnail = null;
+    }
 
-    public String getSection(){return  this.section;}
+    public String getHeadLine() {
+        return this.headLine;
+    }
 
-    public String getPublishedDate(){
+    public String getSection() {
+        return this.section;
+    }
+
+    public String getPublishedDate() {
         return this.publishedDate;
     }
 
-    public String getTrailText(){
+    public String getTrailText() {
         return this.trailText;
     }
 
-    public  String getWebUrl(){
+    public String getWebUrl() {
         return this.webUrl;
     }
 
-    public String getContributor(){
+    public String getContributor() {
         return this.contributor;
     }
 
-    public Bitmap getThumbnail(){
-        return  this.thumbnail;
+    public Bitmap getThumbnail() {
+        return this.thumbnail;
     }
 }
