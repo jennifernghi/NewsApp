@@ -12,13 +12,13 @@ import java.util.Date;
 public class News {
     private String headLine;
     private String section;
-    private Date publishedDate;
+    private String publishedDate;
     private String trailText;
     private String webUrl;
     private String contributor;
     private Bitmap thumbnail;
 
-    public News(String headLine, String section, Date publishedDate, String trailText, String webUrl, String contributor, Bitmap thumbnail){
+    public News(String headLine, String section, String publishedDate, String trailText, String webUrl, String contributor, Bitmap thumbnail){
         this.headLine = headLine;
         this.section=section;
         this.publishedDate=publishedDate;
@@ -27,7 +27,7 @@ public class News {
         this.contributor = contributor;
         this.thumbnail=thumbnail;
     }
-    public News(String headLine, String section, Date publishedDate, String trailText, String webUrl, String contributor){
+    public News(String headLine, String section, String publishedDate, String trailText, String webUrl, String contributor){
         this.headLine = headLine;
         this.section=section;
         this.publishedDate=publishedDate;
@@ -41,7 +41,7 @@ public class News {
 
     public String getSection(){return  this.section;}
 
-    public Date getPublishedDate(){
+    public String getPublishedDate(){
         return this.publishedDate;
     }
 
