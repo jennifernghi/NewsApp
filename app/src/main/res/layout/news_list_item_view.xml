@@ -1,22 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="250dp"
-    android:layout_marginTop="16dp"
     android:layout_marginBottom="16dp"
-    xmlns:tools="http://schemas.android.com/tools">
+    android:layout_marginTop="16dp">
+
     <ImageView
         android:id="@+id/news_thumbnail"
         android:layout_width="match_parent"
         android:layout_height="150dp"
-        android:src="@drawable/default_background"
-        android:scaleType="fitXY"/>
+        android:scaleType="fitXY"
+        android:src="@drawable/default_background" />
 
     <LinearLayout
-        android:layout_below="@id/news_thumbnail"
         android:id="@+id/news_text_container"
         android:layout_width="match_parent"
         android:layout_height="100dp"
+        android:layout_below="@id/news_thumbnail"
         android:background="@android:color/transparent"
         android:orientation="vertical"
         android:padding="8dp">
@@ -25,47 +26,52 @@
             android:id="@+id/headline"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:maxLines="2"
             android:ellipsize="end"
-            tools:text="news headline"
-            android:textStyle="bold"
+            android:maxLines="2"
             android:textColor="@android:color/black"
-            android:textSize="16sp"/>
+            android:textSize="16sp"
+            android:textStyle="bold"
+            tools:text="news headline" />
+
         <LinearLayout
-            android:layout_marginTop="4dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
             android:orientation="horizontal">
+
             <TextView
                 android:id="@+id/author"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                tools:text="Author: name"
+                android:layout_marginRight="16dp"
                 android:textSize="14sp"
-                android:layout_marginRight="16dp"/>
+                tools:text="Author: name" />
+
             <TextView
                 android:id="@+id/published_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                tools:text="publish date"
-                android:textSize="14sp"/>
+                android:textSize="14sp"
+                tools:text="publish date" />
+
             <TextView
                 android:id="@+id/section_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                tools:text="publish date"
-                android:textSize="14sp"/>
+                android:textSize="14sp"
+                tools:text="publish date" />
         </LinearLayout>
+
         <TextView
             android:id="@+id/trail_text"
-            android:layout_marginTop="8dp"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:maxLines="3"
+            android:layout_marginTop="8dp"
             android:ellipsize="end"
-            tools:text="Trail Text..."
+            android:maxLines="3"
             android:textColor="@android:color/black"
-            android:textSize="14sp"/>
+            android:textSize="14sp"
+            tools:text="Trail Text..." />
 
 
     </LinearLayout>

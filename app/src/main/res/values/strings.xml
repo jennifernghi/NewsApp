@@ -1,3 +1,9 @@
 <resources>
-    <string name="app_name">NewsApp</string>
+    <string name="app_name">Daily News</string>
+    <string-array name="sections">
+        <item>US</item>
+        <item>World</item>
+        <item>Tech</item>
+        <item>Sport</item>
+    </string-array>
 </resources>
