@@ -18,8 +18,8 @@ public final class QueryUtils {
         builder.appendQueryParameter("api-key", DefaultParameter.DEFAULT_API_KEY);
         builder.appendQueryParameter("show-fields", DefaultParameter.DEFAULT_FIELDS);
         builder.appendQueryParameter("order-by", DefaultParameter.DEFAULT_ORDER_BY);
-        builder.appendQueryParameter("from-date", "2017-01-01");// 10 days before today
-        builder.appendQueryParameter("to-date", "2017-01-18"); // today' date
+        builder.appendQueryParameter("from-date", DateUtil.formatDate(DateUtil.getXDaysBeforeToday(10)));// 10 days before today
+        builder.appendQueryParameter("to-date", DateUtil.formatDate(DateUtil.getTodayDate())); // today' date
 
         return builder.toString().replace("%2C", ",");
     }
