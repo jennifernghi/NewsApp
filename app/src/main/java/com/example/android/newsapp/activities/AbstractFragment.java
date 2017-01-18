@@ -2,6 +2,7 @@ package com.example.android.newsapp.activities;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,14 +19,18 @@ import java.util.ArrayList;
  */
 
 public abstract class AbstractFragment extends Fragment {
-
+    final String LOG_TAG = AbstractFragment.class.getSimpleName();
     static class ViewHolder {
         private ListView listView;
         private View rootView;
     }
 
+    public AbstractFragment(){
+        Log.i(LOG_TAG, "constructor");
+    }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        Log.i(LOG_TAG, "onCreateView");
         ViewHolder viewHolder = new ViewHolder();
 
         //inflate rootView using list_view
