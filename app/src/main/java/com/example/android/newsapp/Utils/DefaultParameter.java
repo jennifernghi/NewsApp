@@ -13,6 +13,10 @@ public final class DefaultParameter {
     public static final int DEFAULT_PAGE_SIZE =10;
     public static final int DEFAULT_PAGE =1;
     public static final String DEFAULT_TAGS ="contributor";
+    public static final String DEFAULT_US_SECTION = "us-news";
+    public static final String DEFAULT_SPORT_SECTION = "sport";
+    public static final String DEFAULT_TECH_SECTION = "technology";
+    public static final String DEFAULT_WORLD_SECTION = "world";
     private DefaultParameter() {
 
     }

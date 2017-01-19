@@ -78,7 +78,7 @@ public final class QueryUtils {
                 Log.e(LOG_TAG, "error createURL(): can't create URL");
             }
         }
-
+        Log.i(LOG_TAG, "url: "+ url);
         return url;
     }
 
@@ -146,8 +146,8 @@ public final class QueryUtils {
     /**
      * extract news fron json response
      */
-    public static List<News> extractNews(String jsonResponse) {
-        List<News> news = new ArrayList<>();
+    public static ArrayList<News> extractNews(String jsonResponse) {
+        ArrayList<News> news = new ArrayList<>();
 
         try {
             JSONObject root = new JSONObject(jsonResponse);
@@ -231,5 +231,24 @@ public final class QueryUtils {
         } else {
             return "";
         }
+    }
+
+    public static List<News> fetchNewsData(String urlString){
+        ArrayList<News> news = new ArrayList<>();
+        URL url = createURL(urlString);
+
+        String response = "";
+        try {
+            response = downloadJsonResponse(url);
+        } catch (IOException e) {
+            Log.e(LOG_TAG, "error fetchNewsData(), can't downloadJsonResponse");
+        }
+
+        if(!response.equals("")){
+             news = extractNews(response);
+        }
+
+        return news;
+
     }
 }
