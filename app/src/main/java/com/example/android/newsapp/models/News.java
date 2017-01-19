@@ -1,7 +1,7 @@
 package com.example.android.newsapp.models;
 
 import android.graphics.Bitmap;
-
+import java.util.Date;
 /**
  * Created by jennifernghinguyen on 1/17/17.
  */
@@ -9,13 +9,13 @@ import android.graphics.Bitmap;
 public class News {
     private String headLine;
     private String section;
-    private String publishedDate;
+    private Date publishedDate;
     private String trailText;
     private String webUrl;
     private String contributor;
     private Bitmap thumbnail;
 
-    public News(String headLine, String section, String publishedDate, String trailText, String webUrl, String contributor, Bitmap thumbnail) {
+    public News(String headLine, String section, Date publishedDate, String trailText, String webUrl, String contributor, Bitmap thumbnail) {
         this.headLine = headLine;
         this.section = section;
         this.publishedDate = publishedDate;
@@ -25,7 +25,7 @@ public class News {
         this.thumbnail = thumbnail;
     }
 
-    public News(String headLine, String section, String publishedDate, String trailText, String webUrl, String contributor) {
+    public News(String headLine, String section, Date publishedDate, String trailText, String webUrl, String contributor) {
         this.headLine = headLine;
         this.section = section;
         this.publishedDate = publishedDate;
@@ -43,7 +43,7 @@ public class News {
         return this.section;
     }
 
-    public String getPublishedDate() {
+    public Date getPublishedDate() {
         return this.publishedDate;
     }
 

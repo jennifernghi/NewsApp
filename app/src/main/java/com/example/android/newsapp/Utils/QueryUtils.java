@@ -1,9 +1,14 @@
 package com.example.android.newsapp.Utils;
 
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.util.Log;
 
 import com.example.android.newsapp.models.News;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -14,6 +19,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -46,6 +52,9 @@ public final class QueryUtils {
         builder.appendQueryParameter("order-by", DefaultParameter.DEFAULT_ORDER_BY);
         builder.appendQueryParameter("from-date", DateUtil.formatDate(DateUtil.getXDaysBeforeToday(10)));// 10 days before today
         builder.appendQueryParameter("to-date", DateUtil.formatDate(DateUtil.getTodayDate())); // today' date
+        builder.appendQueryParameter("page-size", String.valueOf(DefaultParameter.DEFAULT_PAGE_SIZE));
+        builder.appendQueryParameter("page", String.valueOf(DefaultParameter.DEFAULT_PAGE));
+        builder.appendQueryParameter("show-tags",DefaultParameter.DEFAULT_TAGS);
 
         return builder.toString().replace("%2C", ",");
     }
@@ -133,9 +142,83 @@ public final class QueryUtils {
     /**
      * extract news fron json response
      */
-    public static List<News> extractNews(String response){
+    public static List<News> extractNews(String jsonResponse){
         List<News> news = new ArrayList<>();
+        /*String headline = null;
+        String section = null;
+        Date publishedDate = null;
+        String trailText = null;
+        String webUrl = null;
+        String contributor = null;
+        Bitmap thumbnail = null;*/
 
+        try {
+            JSONObject root = new JSONObject(jsonResponse);
+
+            JSONObject response = root.getJSONObject("response");
+
+            JSONArray results = response.getJSONArray("results");
+
+            for(int i= 0; i<results.length(); i++){
+                JSONObject newInfo = (JSONObject) results.get(i);
+
+                String section = extractString(newInfo, "sectionName");
+
+                Date publishedDate = DateUtil.toDate(extractString(newInfo, "webPublicationDate"));
+
+                String webUrl = extractString(newInfo, "webUrl");
+
+                JSONArray tags = newInfo.getJSONArray("tags");
+
+                JSONObject contributorTag = (JSONObject) tags.get(0);
+
+                String contributor = extractString(contributorTag, "webTitle");
+
+                JSONObject fields = newInfo.getJSONObject("fields");
+
+                String headline = extractString(fields, "headline");
+
+                String trailText = extractString(fields,"trailText");
+
+                String thumbnailUrl = extractString(fields, "thumbnail");
+
+                Bitmap thumbnail = null;
+                if(thumbnailUrl !=null){
+                     thumbnail = makeBitmap(thumbnailUrl);
+                }
+
+                if(thumbnail!=null){
+                    news.add(new News(headline,section, publishedDate, trailText, webUrl, contributor, thumbnail));
+                }else {
+                    news.add(new News(headline,section, publishedDate, trailText, webUrl, contributor));
+                }
+
+            }
+        } catch (JSONException e) {
+            Log.e(LOG_TAG, "error extractNews(): parsing problem");
+        }
         return news;
+    }
+
+    private static Bitmap makeBitmap(String thumbnailUrl) {
+        Bitmap thumbnail = null;
+
+        return thumbnail;
+    }
+
+    private static String extractString(JSONObject newInfo, String stringName) {
+        String str = null;
+
+        try {
+            str = newInfo.getString(stringName);
+        } catch (JSONException e) {
+            Log.i(LOG_TAG, "error: extractString(), can't extract string: " + stringName);
+        }
+
+        if(str!=null){
+            return str;
+        }else {
+            return "";
+        }
     }
 }
