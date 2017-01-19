@@ -1,6 +1,7 @@
 package com.example.android.newsapp.Utils;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.util.Log;
 
@@ -23,7 +24,6 @@ import java.util.Date;
 import java.util.List;
 
 import static com.example.android.newsapp.Utils.DateUtil.JSON_FORMAT;
-import static com.example.android.newsapp.Utils.DateUtil.getDate;
 
 /**
  * Created by jennifernghinguyen on 1/17/17.
@@ -200,6 +200,20 @@ public final class QueryUtils {
     private static Bitmap makeBitmap(String thumbnailUrl) {
         Bitmap thumbnail = null;
 
+        if (thumbnailUrl != null) {
+            InputStream in = null;
+
+            try {
+                in = createURL(thumbnailUrl).openStream();
+
+            } catch (IOException e) {
+               Log.e(LOG_TAG, "error makeBitmap(): can't open stream");
+            }
+
+            if (in != null) {
+                thumbnail = BitmapFactory.decodeStream(in);
+            }
+        }
         return thumbnail;
     }
 

@@ -7,8 +7,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-import static android.R.id.input;
-
 /**
  * Created by jennifernghinguyen on 1/18/17.
  */
@@ -21,25 +19,25 @@ public final class DateUtil {
 
     final static String LOG_TAG = DateUtil.class.getSimpleName();
 
-    public static Date getTodayDate(){
+    public static Date getTodayDate() {
         return new Date();
     }
 
-    public static String formatDate(String formatString, Date date){
+    public static String formatDate(String formatString, Date date) {
         SimpleDateFormat format = new SimpleDateFormat(formatString);
         return format.format(date);
     }
 
-    public static Date getXDaysBeforeToday(int x){
+    public static Date getXDaysBeforeToday(int x) {
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.DATE, -x);
         return calendar.getTime();
     }
 
-    public static Date getDate(String formatString, String dateString){
-       
+    public static Date getDate(String formatString, String dateString) {
+
         SimpleDateFormat format = new SimpleDateFormat(formatString);
-        Date date=null;
+        Date date = null;
         try {
             date = format.parse(dateString);
 
@@ -47,7 +45,7 @@ public final class DateUtil {
             Log.e(LOG_TAG, "error: getDateFromInputString(): can't parse input date");
         }
 
-            return date;
+        return date;
 
     }
 
