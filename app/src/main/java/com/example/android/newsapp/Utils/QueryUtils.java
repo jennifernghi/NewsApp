@@ -22,6 +22,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import static com.example.android.newsapp.Utils.DateUtil.JSON_FORMAT;
+import static com.example.android.newsapp.Utils.DateUtil.getDate;
+
 /**
  * Created by jennifernghinguyen on 1/17/17.
  */
@@ -50,11 +53,11 @@ public final class QueryUtils {
         builder.appendQueryParameter("api-key", DefaultParameter.DEFAULT_API_KEY);
         builder.appendQueryParameter("show-fields", DefaultParameter.DEFAULT_FIELDS);
         builder.appendQueryParameter("order-by", DefaultParameter.DEFAULT_ORDER_BY);
-        builder.appendQueryParameter("from-date", DateUtil.formatDate(DateUtil.getXDaysBeforeToday(10)));// 10 days before today
-        builder.appendQueryParameter("to-date", DateUtil.formatDate(DateUtil.getTodayDate())); // today' date
+        builder.appendQueryParameter("from-date", DateUtil.formatDate(DateUtil.URL_FORMAT, DateUtil.getXDaysBeforeToday(10)));// 10 days before today
+        builder.appendQueryParameter("to-date", DateUtil.formatDate(DateUtil.URL_FORMAT, DateUtil.getTodayDate())); // today' date
         builder.appendQueryParameter("page-size", String.valueOf(DefaultParameter.DEFAULT_PAGE_SIZE));
         builder.appendQueryParameter("page", String.valueOf(DefaultParameter.DEFAULT_PAGE));
-        builder.appendQueryParameter("show-tags",DefaultParameter.DEFAULT_TAGS);
+        builder.appendQueryParameter("show-tags", DefaultParameter.DEFAULT_TAGS);
 
         return builder.toString().replace("%2C", ",");
     }
@@ -72,7 +75,7 @@ public final class QueryUtils {
             try {
                 url = new URL(urlString);
             } catch (MalformedURLException e) {
-                Log.e(LOG_TAG, "error createURL(): can't create URL" );
+                Log.e(LOG_TAG, "error createURL(): can't create URL");
             }
         }
 
@@ -84,8 +87,8 @@ public final class QueryUtils {
      */
 
     public static String downloadJsonResponse(URL url) throws IOException {
-        String response ="";
-        if(url==null){
+        String response = "";
+        if (url == null) {
             return response;
         }
 
@@ -98,20 +101,20 @@ public final class QueryUtils {
             httpURLConnection.setReadTimeout(5000);
             httpURLConnection.setConnectTimeout(6000);
             httpURLConnection.setRequestMethod("GET");
-            if(httpURLConnection.getResponseCode()==200){
-                inputStream=httpURLConnection.getInputStream();
+            if (httpURLConnection.getResponseCode() == 200) {
+                inputStream = httpURLConnection.getInputStream();
                 response = getResponseFromStream(inputStream);
-            }else {
+            } else {
                 Log.e(LOG_TAG, "error: response code = " + httpURLConnection.getResponseCode());
             }
         } catch (IOException e) {
-           Log.e(LOG_TAG, "error downloadJsonResponse(): can't make connection");
-        }finally {
-            if(httpURLConnection!=null){
+            Log.e(LOG_TAG, "error downloadJsonResponse(): can't make connection");
+        } finally {
+            if (httpURLConnection != null) {
                 httpURLConnection.disconnect();
             }
 
-            if(inputStream!=null){
+            if (inputStream != null) {
                 inputStream.close();
             }
         }
@@ -120,19 +123,20 @@ public final class QueryUtils {
 
     /**
      * build json response string
+     *
      * @param inputStream
      * @return
      * @throws IOException
      */
     private static String getResponseFromStream(InputStream inputStream) throws IOException {
         StringBuilder response = new StringBuilder();
-        if(inputStream!=null){
+        if (inputStream != null) {
             InputStreamReader inputStreamReader = new InputStreamReader(inputStream, Charset.forName("UTF-8"));
             BufferedReader reader = new BufferedReader(inputStreamReader);
             String line = reader.readLine();
-            while (line!=null){
+            while (line != null) {
                 response.append(line);
-                line=reader.readLine();
+                line = reader.readLine();
             }
         }
 
@@ -142,15 +146,8 @@ public final class QueryUtils {
     /**
      * extract news fron json response
      */
-    public static List<News> extractNews(String jsonResponse){
+    public static List<News> extractNews(String jsonResponse) {
         List<News> news = new ArrayList<>();
-        /*String headline = null;
-        String section = null;
-        Date publishedDate = null;
-        String trailText = null;
-        String webUrl = null;
-        String contributor = null;
-        Bitmap thumbnail = null;*/
 
         try {
             JSONObject root = new JSONObject(jsonResponse);
@@ -159,12 +156,12 @@ public final class QueryUtils {
 
             JSONArray results = response.getJSONArray("results");
 
-            for(int i= 0; i<results.length(); i++){
+            for (int i = 0; i < results.length(); i++) {
                 JSONObject newInfo = (JSONObject) results.get(i);
 
                 String section = extractString(newInfo, "sectionName");
 
-                Date publishedDate = DateUtil.toDate(extractString(newInfo, "webPublicationDate"));
+                Date publishedDate = DateUtil.getDate(JSON_FORMAT, extractString(newInfo, "webPublicationDate"));
 
                 String webUrl = extractString(newInfo, "webUrl");
 
@@ -178,19 +175,19 @@ public final class QueryUtils {
 
                 String headline = extractString(fields, "headline");
 
-                String trailText = extractString(fields,"trailText");
+                String trailText = extractString(fields, "trailText");
 
                 String thumbnailUrl = extractString(fields, "thumbnail");
 
                 Bitmap thumbnail = null;
-                if(thumbnailUrl !=null){
-                     thumbnail = makeBitmap(thumbnailUrl);
+                if (thumbnailUrl != null) {
+                    thumbnail = makeBitmap(thumbnailUrl);
                 }
 
-                if(thumbnail!=null){
-                    news.add(new News(headline,section, publishedDate, trailText, webUrl, contributor, thumbnail));
-                }else {
-                    news.add(new News(headline,section, publishedDate, trailText, webUrl, contributor));
+                if (thumbnail != null) {
+                    news.add(new News(headline, section, publishedDate, trailText, webUrl, contributor, thumbnail));
+                } else {
+                    news.add(new News(headline, section, publishedDate, trailText, webUrl, contributor));
                 }
 
             }
@@ -215,9 +212,9 @@ public final class QueryUtils {
             Log.i(LOG_TAG, "error: extractString(), can't extract string: " + stringName);
         }
 
-        if(str!=null){
+        if (str != null) {
             return str;
-        }else {
+        } else {
             return "";
         }
     }

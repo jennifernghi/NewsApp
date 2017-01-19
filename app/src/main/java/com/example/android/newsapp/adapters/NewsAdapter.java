@@ -9,9 +9,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.android.newsapp.R;
+import com.example.android.newsapp.Utils.DateUtil;
 import com.example.android.newsapp.models.News;
 
 import java.util.List;
+
+import static com.example.android.newsapp.Utils.DateUtil.DATE_TIME_FORMAT;
+import static com.example.android.newsapp.Utils.DateUtil.formatDate;
 
 /**
  * Created by jennifernghinguyen on 1/17/17.
@@ -58,7 +62,12 @@ public class NewsAdapter extends ArrayAdapter<News> {
         viewHolder.contributorTextView.setText(currentNews.getContributor());
 
         //set published date
-        viewHolder.publishedDateTextView.setText(currentNews.getPublishedDate().toString());
+        if(currentNews.getPublishedDate()!=null) {
+            viewHolder.publishedDateTextView.setText(formatDate(DateUtil.DATE_TIME_FORMAT, currentNews.getPublishedDate()));
+        }else {
+            viewHolder.publishedDateTextView.setVisibility(View.GONE);
+        }
+
 
         //set section
         viewHolder.sectionTextView.setText(currentNews.getSection());

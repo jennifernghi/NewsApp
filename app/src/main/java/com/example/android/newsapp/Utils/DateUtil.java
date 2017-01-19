@@ -6,19 +6,27 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+
+import static android.R.id.input;
+
 /**
  * Created by jennifernghinguyen on 1/18/17.
  */
 
 public final class DateUtil {
 
+    public static String URL_FORMAT = "yyyy-MM-DD";
+    public static String DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
+    public static String JSON_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'";
+
     final static String LOG_TAG = DateUtil.class.getSimpleName();
+
     public static Date getTodayDate(){
         return new Date();
     }
 
-    public static String formatDate(Date date){
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-DD");
+    public static String formatDate(String formatString, Date date){
+        SimpleDateFormat format = new SimpleDateFormat(formatString);
         return format.format(date);
     }
 
@@ -28,33 +36,19 @@ public final class DateUtil {
         return calendar.getTime();
     }
 
-    public static Date getDateFromInputString(String date){
-        SimpleDateFormat input = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
-        Date dateInput=null;
+    public static Date getDate(String formatString, String dateString){
+       
+        SimpleDateFormat format = new SimpleDateFormat(formatString);
+        Date date=null;
         try {
-            dateInput = input.parse(date);
+            date = format.parse(dateString);
 
         } catch (ParseException e) {
             Log.e(LOG_TAG, "error: getDateFromInputString(): can't parse input date");
         }
 
-        if(dateInput !=null){
-            return dateInput;
-        }else {
-            return null;
-        }
+            return date;
+
     }
 
-    public static Date toDate(String formattedDate){
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-DD");
-
-        Date date = null;
-        try {
-            date = format.parse(formattedDate);
-        } catch (ParseException e) {
-            Log.e(LOG_TAG, "error: toDate(): can't parse to date");
-        }
-
-        return date;
-    }
 }
