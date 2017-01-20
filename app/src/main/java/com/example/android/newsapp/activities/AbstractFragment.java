@@ -58,7 +58,7 @@ public abstract class AbstractFragment extends Fragment implements LoaderCallbac
         Log.i(LOG_TAG, "in onstart");
         loaderManager = getLoaderManager();
 
-        loaderManager.initLoader(1, null, this);
+       // loaderManager.initLoader(1, null, this);
     }
 
     @Override
@@ -82,6 +82,7 @@ public abstract class AbstractFragment extends Fragment implements LoaderCallbac
     @Override
     public void onLoadFinished(Loader<List<News>> loader, List<News> data) {
         Log.i(LOG_TAG, "in on load finished");
+        adapter.clear();
         if(data!=null && !data.isEmpty()){
             adapter.addAll(data);
         }
@@ -92,7 +93,6 @@ public abstract class AbstractFragment extends Fragment implements LoaderCallbac
         super.onResume();
         Log.i(LOG_TAG, "in on resume");
         adapter.clear();
-        loaderManager.restartLoader(1, null, this);
     }
 
     @Override
@@ -102,4 +102,16 @@ public abstract class AbstractFragment extends Fragment implements LoaderCallbac
         adapter.clear();
     }
 
+    public void clearAdapter(){
+        if(adapter!=null) {
+            adapter.clear();
+        }
+    }
+    public void startLoading(int fragmentConstant){
+        getLoaderManager().initLoader(fragmentConstant, null, this);
+    }
+
+    public void reStartLoading(int fragmentConstant){
+        getLoaderManager().restartLoader(fragmentConstant, null, this);
+    }
 }

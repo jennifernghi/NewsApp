@@ -211,7 +211,6 @@ public final class QueryUtils {
                 }
 
                 if (thumbnail != null) {
-                    Log.i(LOG_TAG, "got thumbnail " + thumbnail);
                     news.add(new News(headline, section, publishedDate, trailText, webUrl, contributor, thumbnail));
                 } else {
                     news.add(new News(headline, section, publishedDate, trailText, webUrl, contributor));
@@ -250,7 +249,7 @@ public final class QueryUtils {
         try {
             str = newInfo.getString(stringName);
         } catch (JSONException e) {
-            Log.i(LOG_TAG, "error: extractString(), can't extract string: " + stringName);
+            Log.e(LOG_TAG, "error: extractString(), can't extract string: " + stringName);
         }
 
         if (str != null) {
