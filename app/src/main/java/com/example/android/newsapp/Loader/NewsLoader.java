@@ -3,6 +3,7 @@ package com.example.android.newsapp.Loader;
 
 import android.content.Context;
 import android.support.v4.content.AsyncTaskLoader;
+import android.util.Log;
 
 import com.example.android.newsapp.Utils.QueryUtils;
 import com.example.android.newsapp.models.News;
@@ -38,6 +39,8 @@ public class NewsLoader extends AsyncTaskLoader<List<News>> {
         }
 
         String url = QueryUtils.buildURI(baseurl,section);
+
+        Log.i(LOG_TAG, url);
         news = QueryUtils.fetchNewsData(url);
 
         return news;

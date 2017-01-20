@@ -33,6 +33,7 @@ public abstract class AbstractFragment extends Fragment implements LoaderCallbac
 
     public AbstractFragment(String section) {
         this.section = section;
+        Log.i(LOG_TAG, "in AbstractFragment constructor");
     }
 
     @Override
@@ -47,15 +48,14 @@ public abstract class AbstractFragment extends Fragment implements LoaderCallbac
         adapter = new NewsAdapter(getActivity(), new ArrayList<News>());
         viewHolder.listView.setAdapter(adapter);
 
-
-
-
         return viewHolder.rootView;
     }
 
     @Override
     public void onStart() {
         super.onStart();
+
+        Log.i(LOG_TAG, "in onstart");
         loaderManager = getLoaderManager();
 
         loaderManager.initLoader(1, null, this);
@@ -63,6 +63,7 @@ public abstract class AbstractFragment extends Fragment implements LoaderCallbac
 
     @Override
     public Loader<List<News>> onCreateLoader(int id, Bundle args) {
+        Log.i(LOG_TAG, "in oncreateloader");
         return new NewsLoader(getActivity(), baseUrl, section);
     }
 
@@ -74,11 +75,13 @@ public abstract class AbstractFragment extends Fragment implements LoaderCallbac
 
     @Override
     public void onLoaderReset(Loader<List<News>> loader) {
+        Log.i(LOG_TAG, "in on loader reset");
         adapter.clear();
     }
 
     @Override
     public void onLoadFinished(Loader<List<News>> loader, List<News> data) {
+        Log.i(LOG_TAG, "in on load finished");
         if(data!=null && !data.isEmpty()){
             adapter.addAll(data);
         }
@@ -87,6 +90,7 @@ public abstract class AbstractFragment extends Fragment implements LoaderCallbac
     @Override
     public void onResume() {
         super.onResume();
+        Log.i(LOG_TAG, "in on resume");
         adapter.clear();
         loaderManager.restartLoader(1, null, this);
     }
@@ -94,6 +98,8 @@ public abstract class AbstractFragment extends Fragment implements LoaderCallbac
     @Override
     public void onPause() {
         super.onPause();
+        Log.i(LOG_TAG, "in on pause");
         adapter.clear();
     }
+
 }

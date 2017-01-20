@@ -24,6 +24,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        Log.i(LOG_TAG, "in onCreate");
+
         ViewHolder viewHolder = new ViewHolder();
         viewHolder.viewPager = (ViewPager) findViewById(R.id.viewpager);
         viewHolder.viewPager.setAdapter(new ViewPagerAdapter(getSupportFragmentManager(), this));
@@ -31,7 +33,6 @@ public class MainActivity extends AppCompatActivity {
         viewHolder.tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
         viewHolder.tabLayout.setupWithViewPager(viewHolder.viewPager);
 
-        String url = QueryUtils.buildURI(DefaultParameter.DEFAULT_BASE_URL, "us-news");
-        Log.i(LOG_TAG, url);
+
     }
 }
