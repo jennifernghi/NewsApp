@@ -1,11 +1,13 @@
 package com.example.android.newsapp.Loader;
 
-import android.content.AsyncTaskLoader;
+
 import android.content.Context;
+import android.support.v4.content.AsyncTaskLoader;
 
 import com.example.android.newsapp.Utils.QueryUtils;
 import com.example.android.newsapp.models.News;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,12 +32,14 @@ public class NewsLoader extends AsyncTaskLoader<List<News>> {
 
     @Override
     public List<News> loadInBackground() {
-        List<News> news;
+        ArrayList<News> news;
         if((baseurl.length()<1 || baseurl ==null) || (section.length()<1 || section ==null)){
             return null;
         }
 
-        news = QueryUtils.fetchNewsData(baseurl);
+        String url = QueryUtils.buildURI(baseurl,section);
+        news = QueryUtils.fetchNewsData(url);
+
         return news;
     }
 

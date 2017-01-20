@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.util.Log;
 
 import com.example.android.newsapp.R;
 import com.example.android.newsapp.activities.SportFragment;
@@ -16,6 +17,7 @@ import com.example.android.newsapp.activities.WorldFragment;
  */
 
 public class ViewPagerAdapter extends FragmentPagerAdapter {
+    final String LOG_TAG = ViewPagerAdapter.class.getSimpleName();
 
     Context context;
     String[] pageTitle;
@@ -29,12 +31,16 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
     @Override
     public Fragment getItem(int position) {
         if (position == 0) {
+            Log.i(LOG_TAG, "create US Fragment");
             return new USFragment();
         } else if (position == 1) {
+            Log.i(LOG_TAG, "create world Fragment");
             return new WorldFragment();
         } else if (position == 2) {
+            Log.i(LOG_TAG, "create tech Fragment");
             return new TechFragment();
         } else {
+            Log.i(LOG_TAG, "create sport Fragment");
             return new SportFragment();
         }
     }
@@ -48,12 +54,13 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
     public CharSequence getPageTitle(int position) {
         if (position == 0) {
             return pageTitle[0];
-        } else if (position == 1) {
+        }else if (position == 1) {
             return pageTitle[1];
         } else if (position == 2) {
             return pageTitle[2];
         } else {
             return pageTitle[3];
         }
+
     }
 }

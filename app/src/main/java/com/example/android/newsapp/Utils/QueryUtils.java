@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import static android.R.string.no;
 import static com.example.android.newsapp.Utils.DateUtil.JSON_FORMAT;
 
 /**
@@ -151,33 +152,91 @@ public final class QueryUtils {
 
         try {
             JSONObject root = new JSONObject(jsonResponse);
-
+            if(root !=null){
+                Log.i(LOG_TAG, "got root");
+            }
             JSONObject response = root.getJSONObject("response");
+            if(response !=null){
+                Log.i(LOG_TAG, "got response");
+            }
 
             JSONArray results = response.getJSONArray("results");
+            if(results.length()>=1){
+                Log.i(LOG_TAG, "got results");
+            }
 
             for (int i = 0; i < results.length(); i++) {
                 JSONObject newInfo = (JSONObject) results.get(i);
 
+                if(newInfo !=null){
+                    Log.i(LOG_TAG, "got newInfo");
+                }
+
                 String section = extractString(newInfo, "sectionName");
+
+                if(section !=null){
+                    Log.i(LOG_TAG, "got section " + section);
+                }
 
                 Date publishedDate = DateUtil.getDate(JSON_FORMAT, extractString(newInfo, "webPublicationDate"));
 
+                if(publishedDate !=null){
+                    Log.i(LOG_TAG, "got publishedDate " + publishedDate);
+                }
                 String webUrl = extractString(newInfo, "webUrl");
 
+
+                if(webUrl !=null){
+                    Log.i(LOG_TAG, "got webUrl " + webUrl);
+                }
                 JSONArray tags = newInfo.getJSONArray("tags");
 
-                JSONObject contributorTag = (JSONObject) tags.get(0);
 
-                String contributor = extractString(contributorTag, "webTitle");
+                if(tags !=null){
+                    Log.i(LOG_TAG, "got tags array ");
+                }
+                String contributor = null;
+                if(tags.length()==1) {
+                    JSONObject contributorTag = (JSONObject) tags.get(0);
 
+
+                    if (contributorTag != null) {
+                        Log.i(LOG_TAG, "got contributorTag ");
+                    }
+
+                     contributor = extractString(contributorTag, "webTitle");
+
+
+                    if (contributor != null) {
+                        Log.i(LOG_TAG, "got contributor " + contributor);
+                    }
+                }else {
+                     contributor = "";
+                    Log.i(LOG_TAG, "no contributor " );
+                }
                 JSONObject fields = newInfo.getJSONObject("fields");
+
+                if(fields !=null){
+                    Log.i(LOG_TAG, "got field object ");
+                }
 
                 String headline = extractString(fields, "headline");
 
+
+                if(headline !=null){
+                    Log.i(LOG_TAG, "got headline " + headline);
+                }
                 String trailText = extractString(fields, "trailText");
 
+                if(trailText !=null){
+                    Log.i(LOG_TAG, "got headline " + trailText);
+                }
+
                 String thumbnailUrl = extractString(fields, "thumbnail");
+
+                if(thumbnailUrl !=null){
+                    Log.i(LOG_TAG, "got thumbnailUrl " + thumbnailUrl);
+                }
 
                 Bitmap thumbnail = null;
                 if (thumbnailUrl != null) {
@@ -185,6 +244,7 @@ public final class QueryUtils {
                 }
 
                 if (thumbnail != null) {
+                    Log.i(LOG_TAG, "got thumbnail " + thumbnail);
                     news.add(new News(headline, section, publishedDate, trailText, webUrl, contributor, thumbnail));
                 } else {
                     news.add(new News(headline, section, publishedDate, trailText, webUrl, contributor));
@@ -233,7 +293,7 @@ public final class QueryUtils {
         }
     }
 
-    public static List<News> fetchNewsData(String urlString){
+    public static ArrayList<News> fetchNewsData(String urlString){
         ArrayList<News> news = new ArrayList<>();
         URL url = createURL(urlString);
 
