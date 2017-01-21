@@ -1,5 +1,6 @@
 package com.example.android.newsapp.activities;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
@@ -9,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 
 import com.example.android.newsapp.Loader.NewsLoader;
 import com.example.android.newsapp.R;
@@ -29,7 +31,7 @@ public abstract class AbstractFragment extends Fragment implements LoaderCallbac
     private NewsAdapter adapter;
     private String baseUrl = DefaultParameter.DEFAULT_BASE_URL;
     private final int LOADER_CONSTANT = 1;
-
+    private ViewHolder viewHolder;
     public AbstractFragment(String section) {
         this.section = section;
         Log.i(LOG_TAG, "in AbstractFragment constructor");
@@ -39,7 +41,7 @@ public abstract class AbstractFragment extends Fragment implements LoaderCallbac
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Log.i(LOG_TAG, "onCreateView");
-        ViewHolder viewHolder = new ViewHolder();
+         viewHolder = new ViewHolder();
 
         //inflate rootView using list_view
         viewHolder.rootView = inflater.inflate(R.layout.news_list_view, container, false);
@@ -47,6 +49,8 @@ public abstract class AbstractFragment extends Fragment implements LoaderCallbac
         viewHolder.listView = (ListView) viewHolder.rootView.findViewById(R.id.list);
         adapter = new NewsAdapter(getActivity(), new ArrayList<News>());
         viewHolder.listView.setAdapter(adapter);
+
+        viewHolder.loadingBar = (ProgressBar) viewHolder.rootView.findViewById(R.id.loading_bar);
 
 
         return viewHolder.rootView;
@@ -70,6 +74,7 @@ public abstract class AbstractFragment extends Fragment implements LoaderCallbac
 
         private ListView listView;
         private View rootView;
+        private ProgressBar loadingBar;
     }
 
     @Override
@@ -81,8 +86,11 @@ public abstract class AbstractFragment extends Fragment implements LoaderCallbac
     @Override
     public void onLoadFinished(Loader<List<News>> loader, List<News> data) {
         Log.i(LOG_TAG, "in on load finished");
+
+        showProgressBar(true);
         clearAdapter();
         if (data != null && !data.isEmpty()) {
+            showProgressBar(false);
             adapter.addAll(data);
         }
     }
@@ -115,4 +123,12 @@ public abstract class AbstractFragment extends Fragment implements LoaderCallbac
     }
 
 
+    public void showProgressBar(boolean on){
+        if(on) {
+            viewHolder.loadingBar.setVisibility(View.VISIBLE);
+
+        }else{
+            viewHolder.loadingBar.setVisibility(View.GONE);
+        }
+    }
 }
