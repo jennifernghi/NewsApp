@@ -1,6 +1,7 @@
 package com.example.android.newsapp.activities;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
@@ -15,6 +16,7 @@ import com.example.android.newsapp.Loader.NewsLoader;
 import com.example.android.newsapp.R;
 import com.example.android.newsapp.Utils.DefaultParameter;
 import com.example.android.newsapp.adapters.NewsAdapter;
+import com.example.android.newsapp.listener.FragmentLifeCycleListener;
 import com.example.android.newsapp.models.News;
 
 import java.util.ArrayList;
@@ -30,10 +32,18 @@ public abstract class AbstractFragment extends Fragment implements LoaderCallbac
     private NewsAdapter adapter;
     private LoaderManager loaderManager;
     private String baseUrl = DefaultParameter.DEFAULT_BASE_URL;
+    private final int LOADER_CONSTANT =1;
 
     public AbstractFragment(String section) {
         this.section = section;
         Log.i(LOG_TAG, "in AbstractFragment constructor");
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        Log.i(LOG_TAG, "on Create");
     }
 
     @Override
@@ -48,17 +58,16 @@ public abstract class AbstractFragment extends Fragment implements LoaderCallbac
         adapter = new NewsAdapter(getActivity(), new ArrayList<News>());
         viewHolder.listView.setAdapter(adapter);
 
+
         return viewHolder.rootView;
     }
 
     @Override
     public void onStart() {
         super.onStart();
-
         Log.i(LOG_TAG, "in onstart");
-        loaderManager = getLoaderManager();
 
-       // loaderManager.initLoader(1, null, this);
+        startLoading(1);
     }
 
     @Override
@@ -93,6 +102,7 @@ public abstract class AbstractFragment extends Fragment implements LoaderCallbac
         super.onResume();
         Log.i(LOG_TAG, "in on resume");
         adapter.clear();
+       // reStartLoading(LOADER_CONSTANT);
     }
 
     @Override
@@ -101,6 +111,7 @@ public abstract class AbstractFragment extends Fragment implements LoaderCallbac
         Log.i(LOG_TAG, "in on pause");
         adapter.clear();
     }
+
 
     public void clearAdapter(){
         if(adapter!=null) {
@@ -114,4 +125,16 @@ public abstract class AbstractFragment extends Fragment implements LoaderCallbac
     public void reStartLoading(int fragmentConstant){
         getLoaderManager().restartLoader(fragmentConstant, null, this);
     }
+
+   /* @Override
+    public void onPauseTask() {
+        Log.i(LOG_TAG, "in on pause task");
+       // adapter.clear();
+    }
+
+    @Override
+    public void onResumeTask() {
+        Log.i(LOG_TAG, "in on resume task");
+        //adapter.clear();
+    }*/
 }

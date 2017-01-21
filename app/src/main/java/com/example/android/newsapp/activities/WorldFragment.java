@@ -9,7 +9,6 @@ import com.example.android.newsapp.Utils.DefaultParameter;
  * Created by jennifernghinguyen on 1/17/17.
  */
 public class WorldFragment extends AbstractFragment {
-    final int WORLD_FRAGMENT_CONSTANT =1;
     private boolean initialized = false;
     final String LOG_TAG = WorldFragment.class.getSimpleName();
 
@@ -23,8 +22,9 @@ public class WorldFragment extends AbstractFragment {
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
 
-        if(this.isVisible() && !initialized){
-           startLoading(1);
+        if(this.isVisible() && !initialized&& !this.isHidden()){
+          // startLoading(1);
+            Log.i(LOG_TAG, "start loading");
             initialized=true;
         }
     }
@@ -32,6 +32,8 @@ public class WorldFragment extends AbstractFragment {
     @Override
     public void onResume() {
         super.onResume();
-        reStartLoading(1);
+        if(this.isVisible()){
+            reStartLoading(1);
+        }
     }
 }

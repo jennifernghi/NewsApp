@@ -10,9 +10,9 @@ import com.example.android.newsapp.Utils.DefaultParameter;
  * Created by jennifernghinguyen on 1/17/17.
  */
 public class SportFragment extends AbstractFragment {
-    final int SPORT_FRAGMENT_CONSTANT =3;
     private boolean initialized = false;
     final String LOG_TAG = SportFragment.class.getSimpleName();
+
     public SportFragment() {
         super(DefaultParameter.DEFAULT_SPORT_SECTION);
         Log.i(LOG_TAG, "in sport fragment constructor");
@@ -24,8 +24,9 @@ public class SportFragment extends AbstractFragment {
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
 
-        if(this.isVisible() && !initialized){
-            startLoading(1);
+        if(this.isVisible() && !initialized && !this.isHidden()){
+           // startLoading(1);
+            Log.i(LOG_TAG, "start loading");
             initialized =true;
         }
     }
@@ -34,7 +35,9 @@ public class SportFragment extends AbstractFragment {
     @Override
     public void onResume() {
         super.onResume();
-        reStartLoading(1);
+        if(this.isVisible()){
+            reStartLoading(1);
+        }
     }
 
     @Override
