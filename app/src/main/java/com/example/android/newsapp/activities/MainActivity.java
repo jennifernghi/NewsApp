@@ -8,41 +8,13 @@ import android.util.Log;
 
 import com.example.android.newsapp.R;
 import com.example.android.newsapp.adapters.ViewPagerAdapter;
-import com.example.android.newsapp.listener.FragmentLifeCycleListener;
 
 public class MainActivity extends AppCompatActivity {
     final static String LOG_TAG = MainActivity.class.getSimpleName();
 
     private ViewPagerAdapter adapter;
 
-    private ViewPager.OnPageChangeListener pageChangeListener = new ViewPager.OnPageChangeListener() {
 
-        int currentPosition = 0;
-
-        @Override
-        public void onPageSelected(int newPosition) {
-            Log.i("Main", "currentPosition =  " + currentPosition);
-            Log.i("Main", "newPosition =  " + newPosition);
-            FragmentLifeCycleListener fragmentToHide = (FragmentLifeCycleListener) adapter.getItem(currentPosition);
-            fragmentToHide.onPauseTask();
-
-            FragmentLifeCycleListener fragmentToShow = (FragmentLifeCycleListener) adapter.getItem(newPosition);
-            fragmentToShow.onResumeTask();
-
-            currentPosition = newPosition;
-        }
-
-        @Override
-        public void onPageScrolled(int arg0, float arg1, int arg2) {
-        }
-
-        public void onPageScrollStateChanged(int arg0) {
-        }
-
-        public int getCurrentPosition() {
-            return currentPosition;
-        }
-    };
     static class ViewHolder {
         private TabLayout tabLayout;
         private ViewPager viewPager;
@@ -60,11 +32,11 @@ public class MainActivity extends AppCompatActivity {
         viewHolder.viewPager = (ViewPager) findViewById(R.id.viewpager);
         adapter = new ViewPagerAdapter(getSupportFragmentManager(), this);
         viewHolder.viewPager.setAdapter(adapter);
-        viewHolder.viewPager.setOffscreenPageLimit(adapter.getCount());
+        viewHolder.viewPager.setOffscreenPageLimit(4);
+        viewHolder.viewPager.setCurrentItem(0);
+
         viewHolder.tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
         viewHolder.tabLayout.setupWithViewPager(viewHolder.viewPager);
-
-        //viewHolder.viewPager.addOnPageChangeListener(pageChangeListener);
 
 
     }

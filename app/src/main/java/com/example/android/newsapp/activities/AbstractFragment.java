@@ -1,9 +1,7 @@
 package com.example.android.newsapp.activities;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.LoaderManager;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.Loader;
 import android.util.Log;
@@ -16,7 +14,6 @@ import com.example.android.newsapp.Loader.NewsLoader;
 import com.example.android.newsapp.R;
 import com.example.android.newsapp.Utils.DefaultParameter;
 import com.example.android.newsapp.adapters.NewsAdapter;
-import com.example.android.newsapp.listener.FragmentLifeCycleListener;
 import com.example.android.newsapp.models.News;
 
 import java.util.ArrayList;
@@ -30,21 +27,14 @@ public abstract class AbstractFragment extends Fragment implements LoaderCallbac
     final String LOG_TAG = AbstractFragment.class.getSimpleName();
     private String section;
     private NewsAdapter adapter;
-    private LoaderManager loaderManager;
     private String baseUrl = DefaultParameter.DEFAULT_BASE_URL;
-    private final int LOADER_CONSTANT =1;
+    private final int LOADER_CONSTANT = 1;
 
     public AbstractFragment(String section) {
         this.section = section;
         Log.i(LOG_TAG, "in AbstractFragment constructor");
     }
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        Log.i(LOG_TAG, "on Create");
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -67,7 +57,7 @@ public abstract class AbstractFragment extends Fragment implements LoaderCallbac
         super.onStart();
         Log.i(LOG_TAG, "in onstart");
 
-        startLoading(1);
+        startLoading(LOADER_CONSTANT);
     }
 
     @Override
@@ -85,14 +75,14 @@ public abstract class AbstractFragment extends Fragment implements LoaderCallbac
     @Override
     public void onLoaderReset(Loader<List<News>> loader) {
         Log.i(LOG_TAG, "in on loader reset");
-        adapter.clear();
+        clearAdapter();
     }
 
     @Override
     public void onLoadFinished(Loader<List<News>> loader, List<News> data) {
         Log.i(LOG_TAG, "in on load finished");
-        adapter.clear();
-        if(data!=null && !data.isEmpty()){
+        clearAdapter();
+        if (data != null && !data.isEmpty()) {
             adapter.addAll(data);
         }
     }
@@ -101,40 +91,28 @@ public abstract class AbstractFragment extends Fragment implements LoaderCallbac
     public void onResume() {
         super.onResume();
         Log.i(LOG_TAG, "in on resume");
-        adapter.clear();
-       // reStartLoading(LOADER_CONSTANT);
+        clearAdapter();
+        startLoading(LOADER_CONSTANT);
     }
 
     @Override
     public void onPause() {
         super.onPause();
         Log.i(LOG_TAG, "in on pause");
-        adapter.clear();
+        clearAdapter();
     }
 
 
-    public void clearAdapter(){
-        if(adapter!=null) {
+    public void clearAdapter() {
+        if (adapter != null) {
             adapter.clear();
         }
     }
-    public void startLoading(int fragmentConstant){
+
+    public void startLoading(int fragmentConstant) {
+        Log.i(LOG_TAG, "initialize: start loading");
         getLoaderManager().initLoader(fragmentConstant, null, this);
     }
 
-    public void reStartLoading(int fragmentConstant){
-        getLoaderManager().restartLoader(fragmentConstant, null, this);
-    }
 
-   /* @Override
-    public void onPauseTask() {
-        Log.i(LOG_TAG, "in on pause task");
-       // adapter.clear();
-    }
-
-    @Override
-    public void onResumeTask() {
-        Log.i(LOG_TAG, "in on resume task");
-        //adapter.clear();
-    }*/
 }
