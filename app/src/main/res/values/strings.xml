@@ -6,4 +6,5 @@
         <item>Tech</item>
         <item>Sport</item>
     </string-array>
+    <string name="loading">Loading . . .</string>
 </resources>

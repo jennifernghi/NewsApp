@@ -1,34 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:gravity="center">
 
     <ProgressBar
         android:id="@+id/loading_bar"
-        android:theme="@style/LinearProgress"
-
-        android:layout_height="wrap_content"
         style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-        android:indeterminate="true"
-        android:layout_alignParentTop="true"
-        android:minHeight="20dp"
-        android:maxHeight="20dp"
         android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
         android:layout_marginTop="-8dp"
-     />
-
-
+        android:indeterminate="true"
+        android:maxHeight="20dp"
+        android:minHeight="20dp"
+        android:theme="@style/LinearProgress" />
+    
 
     <ListView
-        android:layout_below="@id/loading_bar"
         android:id="@+id/list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_below="@id/loading_bar"
         android:divider="@android:color/transparent"
         android:dividerHeight="0dp"
-        android:drawSelectorOnTop="true">
-    </ListView>
+        android:drawSelectorOnTop="true"/>
 
-
-
+    <TextView
+        android:id="@+id/loading_text"
+        android:layout_width="100dp"
+        android:layout_height="50dp"
+        android:gravity="center"
+        android:text="@string/loading"
+        android:textSize="16sp"
+        android:layout_centerInParent="true"/>
 </RelativeLayout>

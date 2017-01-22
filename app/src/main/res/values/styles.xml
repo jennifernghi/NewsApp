@@ -8,8 +8,8 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
-    <style name="LinearProgress" parent="Theme.AppCompat.Light">
-        <item name="colorAccent">#42ebf4</item>
-        <item name="android:progressBackgroundTint">#8e94ed</item>
+    <style name="LinearProgress">
+        <item name="colorAccent">@color/loadingColorAccent</item>
+        <item name="android:progressBackgroundTint">@color/loadingColorBackGroundTint</item>
     </style>
 </resources>

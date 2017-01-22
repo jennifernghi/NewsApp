@@ -1,5 +1,6 @@
 package com.example.android.newsapp.activities;
 
+import android.app.Activity;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -9,8 +10,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.example.android.newsapp.Loader.NewsLoader;
 import com.example.android.newsapp.R;
@@ -37,21 +40,27 @@ public abstract class AbstractFragment extends Fragment implements LoaderCallbac
         Log.i(LOG_TAG, "in AbstractFragment constructor");
     }
 
+    static class ViewHolder {
 
+        private ListView listView;
+        private View rootView;
+        private ProgressBar loadingBar;
+        private TextView loadingText;
+    }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Log.i(LOG_TAG, "onCreateView");
          viewHolder = new ViewHolder();
 
         //inflate rootView using list_view
-        viewHolder.rootView = inflater.inflate(R.layout.news_list_view, container, false);
+        viewHolder.rootView =  inflater.inflate(R.layout.news_list_view, container, false);
 
         viewHolder.listView = (ListView) viewHolder.rootView.findViewById(R.id.list);
         adapter = new NewsAdapter(getActivity(), new ArrayList<News>());
         viewHolder.listView.setAdapter(adapter);
 
         viewHolder.loadingBar = (ProgressBar) viewHolder.rootView.findViewById(R.id.loading_bar);
-
+        viewHolder.loadingText = (TextView) viewHolder.rootView.findViewById(R.id.loading_text);
 
         return viewHolder.rootView;
     }
@@ -70,12 +79,7 @@ public abstract class AbstractFragment extends Fragment implements LoaderCallbac
         return new NewsLoader(getActivity(), baseUrl, section);
     }
 
-    static class ViewHolder {
 
-        private ListView listView;
-        private View rootView;
-        private ProgressBar loadingBar;
-    }
 
     @Override
     public void onLoaderReset(Loader<List<News>> loader) {
@@ -125,9 +129,11 @@ public abstract class AbstractFragment extends Fragment implements LoaderCallbac
 
     public void showProgressBar(boolean on){
         if(on) {
+            //viewHolder.listView.setVisibility(View.GONE);
+            viewHolder.loadingText.setVisibility(View.VISIBLE);
             viewHolder.loadingBar.setVisibility(View.VISIBLE);
-
         }else{
+            viewHolder.loadingText.setVisibility(View.GONE);
             viewHolder.loadingBar.setVisibility(View.GONE);
         }
     }
