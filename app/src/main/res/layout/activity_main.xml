@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".activities.MainActivity"
-    android:background="@color/lightGray">
+    android:background="@drawable/gradient_background">
 
     <android.support.design.widget.TabLayout
         android:id="@+id/sliding_tabs"

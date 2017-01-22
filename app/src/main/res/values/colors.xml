@@ -7,4 +7,6 @@
     <color name="loadingColorAccent">#42ebf4</color>
     <color name="loadingColorBackGroundTint">#8e94ed</color>
     <color name="darkGray">#353535</color>
+    <color name="darkGreen">#1fa82b</color>
+    <color name="lightGreen">#56f364</color>
 </resources>
