@@ -10,9 +10,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.android.newsapp.Loader.NewsLoader;
@@ -46,21 +49,28 @@ public abstract class AbstractFragment extends Fragment implements LoaderCallbac
         private View rootView;
         private ProgressBar loadingBar;
         private TextView loadingText;
+        private LinearLayout emptyView;
+        private ImageView emptyViewImage;
+        private TextView emptyViewText;
+        private Button emptyViewButton;
+
     }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Log.i(LOG_TAG, "onCreateView");
          viewHolder = new ViewHolder();
 
-        //inflate rootView using list_view
-        viewHolder.rootView =  inflater.inflate(R.layout.news_list_view, container, false);
+        populateViews(viewHolder, inflater, container);
 
-        viewHolder.listView = (ListView) viewHolder.rootView.findViewById(R.id.list);
+
+
         adapter = new NewsAdapter(getActivity(), new ArrayList<News>());
         viewHolder.listView.setAdapter(adapter);
 
-        viewHolder.loadingBar = (ProgressBar) viewHolder.rootView.findViewById(R.id.loading_bar);
-        viewHolder.loadingText = (TextView) viewHolder.rootView.findViewById(R.id.loading_text);
+        viewHolder.listView.setEmptyView(viewHolder.emptyView);
+        enableEmptyView(false);
+
+
 
         return viewHolder.rootView;
     }
@@ -76,6 +86,7 @@ public abstract class AbstractFragment extends Fragment implements LoaderCallbac
     @Override
     public Loader<List<News>> onCreateLoader(int id, Bundle args) {
         Log.i(LOG_TAG, "in oncreateloader");
+        showProgressBar(true);
         return new NewsLoader(getActivity(), baseUrl, section);
     }
 
@@ -91,11 +102,15 @@ public abstract class AbstractFragment extends Fragment implements LoaderCallbac
     public void onLoadFinished(Loader<List<News>> loader, List<News> data) {
         Log.i(LOG_TAG, "in on load finished");
 
-        showProgressBar(true);
+        enableEmptyView(true);
+
         clearAdapter();
         if (data != null && !data.isEmpty()) {
             showProgressBar(false);
             adapter.addAll(data);
+        }else {
+            enableEmptyView(true);
+
         }
     }
 
@@ -136,5 +151,38 @@ public abstract class AbstractFragment extends Fragment implements LoaderCallbac
             viewHolder.loadingText.setVisibility(View.GONE);
             viewHolder.loadingBar.setVisibility(View.GONE);
         }
+    }
+    public void enableEmptyView(boolean visibility) {
+        if(visibility){
+            viewHolder.emptyView.setVisibility(View.VISIBLE);
+            viewHolder.emptyViewImage.setVisibility(View.VISIBLE);
+            viewHolder.emptyViewText.setVisibility(View.VISIBLE);
+            viewHolder.emptyViewButton.setVisibility(View.VISIBLE);
+
+        }else if(!visibility) {
+            viewHolder.emptyView.setVisibility(View.GONE);
+            viewHolder.emptyViewImage.setVisibility(View.GONE);
+            viewHolder.emptyViewText.setVisibility(View.GONE);
+            viewHolder.emptyViewButton.setVisibility(View.GONE);
+
+        }
+    }
+    public void setEmptyView(int resId, String textView, String buttonText){
+        viewHolder.emptyViewImage.setImageResource(resId);
+        viewHolder.emptyViewText.setText(textView);
+        viewHolder.emptyViewButton.setText(buttonText);
+    }
+
+    public void populateViews(ViewHolder viewHolder, LayoutInflater inflater, ViewGroup container){
+        viewHolder.rootView =  inflater.inflate(R.layout.news_list_view, container, false);
+        viewHolder.emptyView = (LinearLayout) viewHolder.rootView.findViewById(R.id.empty_view_container);
+        viewHolder.emptyView.setVisibility(View.GONE);
+        viewHolder.listView = (ListView) viewHolder.rootView.findViewById(R.id.list);
+        viewHolder.loadingBar = (ProgressBar) viewHolder.rootView.findViewById(R.id.loading_bar);
+        viewHolder.loadingText = (TextView) viewHolder.rootView.findViewById(R.id.loading_text);
+
+        viewHolder.emptyViewImage = (ImageView) viewHolder.rootView.findViewById(R.id.empty_view_image);
+        viewHolder.emptyViewText = (TextView) viewHolder.rootView.findViewById(R.id.empty_view_text);
+        viewHolder.emptyViewButton = (Button) viewHolder.rootView.findViewById(R.id.empty_view_button);
     }
 }
