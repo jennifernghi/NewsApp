@@ -14,7 +14,7 @@ public class TechFragment extends AbstractFragment {
     final String LOG_TAG = TechFragment.class.getSimpleName();
 
     public TechFragment() {
-        super(DefaultParameter.DEFAULT_TECH_SECTION);
+        super(DefaultParameter.DEFAULT_TECH_SECTION, DefaultParameter.DEFAULT_TECH_CONSTANT);
         Log.i(LOG_TAG, "in tech fragment constructor");
     }
 

@@ -1,10 +1,11 @@
 package com.example.android.newsapp.activities;
 
-import android.app.Activity;
-import android.graphics.Color;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.Loader;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,7 +16,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.android.newsapp.Loader.NewsLoader;
@@ -27,6 +27,8 @@ import com.example.android.newsapp.models.News;
 import java.util.ArrayList;
 import java.util.List;
 
+import static android.content.Context.CONNECTIVITY_SERVICE;
+
 /**
  * Created by jennifernghinguyen on 1/17/17.
  */
@@ -37,9 +39,12 @@ public abstract class AbstractFragment extends Fragment implements LoaderCallbac
     private NewsAdapter adapter;
     private String baseUrl = DefaultParameter.DEFAULT_BASE_URL;
     private final int LOADER_CONSTANT = 1;
+    private int loaderConstant;
     private ViewHolder viewHolder;
-    public AbstractFragment(String section) {
+
+    public AbstractFragment(String section, int loaderConstant) {
         this.section = section;
+        this.loaderConstant = loaderConstant;
         Log.i(LOG_TAG, "in AbstractFragment constructor");
     }
 
@@ -55,13 +60,13 @@ public abstract class AbstractFragment extends Fragment implements LoaderCallbac
         private Button emptyViewButton;
 
     }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Log.i(LOG_TAG, "onCreateView");
-         viewHolder = new ViewHolder();
+        viewHolder = new ViewHolder();
 
         populateViews(viewHolder, inflater, container);
-
 
 
         adapter = new NewsAdapter(getActivity(), new ArrayList<News>());
@@ -69,7 +74,6 @@ public abstract class AbstractFragment extends Fragment implements LoaderCallbac
 
         viewHolder.listView.setEmptyView(viewHolder.emptyView);
         enableEmptyView(false);
-
 
 
         return viewHolder.rootView;
@@ -83,32 +87,33 @@ public abstract class AbstractFragment extends Fragment implements LoaderCallbac
         startLoading(LOADER_CONSTANT);
     }
 
+
     @Override
     public Loader<List<News>> onCreateLoader(int id, Bundle args) {
         Log.i(LOG_TAG, "in oncreateloader");
-        showProgressBar(true);
+
         return new NewsLoader(getActivity(), baseUrl, section);
     }
-
 
 
     @Override
     public void onLoaderReset(Loader<List<News>> loader) {
         Log.i(LOG_TAG, "in on loader reset");
+
         clearAdapter();
     }
 
     @Override
     public void onLoadFinished(Loader<List<News>> loader, List<News> data) {
         Log.i(LOG_TAG, "in on load finished");
-
+        Log.i(LOG_TAG, "constant" + LOADER_CONSTANT);
         enableEmptyView(true);
 
         clearAdapter();
         if (data != null && !data.isEmpty()) {
             showProgressBar(false);
             adapter.addAll(data);
-        }else {
+        } else {
             enableEmptyView(true);
 
         }
@@ -118,48 +123,66 @@ public abstract class AbstractFragment extends Fragment implements LoaderCallbac
     public void onResume() {
         super.onResume();
         Log.i(LOG_TAG, "in on resume");
-        clearAdapter();
-        startLoading(LOADER_CONSTANT);
-    }
 
-    @Override
-    public void onPause() {
-        super.onPause();
-        Log.i(LOG_TAG, "in on pause");
-        clearAdapter();
+        reStartLoading(LOADER_CONSTANT);
+
     }
 
 
     public void clearAdapter() {
         if (adapter != null) {
             adapter.clear();
+
         }
     }
 
     public void startLoading(int fragmentConstant) {
         Log.i(LOG_TAG, "initialize: start loading");
-        getLoaderManager().initLoader(fragmentConstant, null, this);
+        if (checkNetWorkConnection()) {
+            showProgressBar(true);
+            enableEmptyView(false);
+            getLoaderManager().initLoader(fragmentConstant, null, this).forceLoad();
+        } else {
+            enableEmptyView(true);
+            setEmptyView(R.drawable.disconnect, "Check network connection!", "Try Again!");
+
+        }
+
+    }
+
+    public void reStartLoading(int fragmentConstant) {
+        Log.i(LOG_TAG, "initialize: start loading");
+        if (checkNetWorkConnection()) {
+            showProgressBar(true);
+            enableEmptyView(false);
+            getLoaderManager().getLoader(fragmentConstant).forceLoad();
+        } else {
+            enableEmptyView(true);
+            setEmptyView(R.drawable.disconnect, "Check network connection!", "Try Again!");
+
+        }
+
     }
 
 
-    public void showProgressBar(boolean on){
-        if(on) {
-            //viewHolder.listView.setVisibility(View.GONE);
+    public void showProgressBar(boolean on) {
+        if (on) {
             viewHolder.loadingText.setVisibility(View.VISIBLE);
             viewHolder.loadingBar.setVisibility(View.VISIBLE);
-        }else{
+        } else {
             viewHolder.loadingText.setVisibility(View.GONE);
             viewHolder.loadingBar.setVisibility(View.GONE);
         }
     }
+
     public void enableEmptyView(boolean visibility) {
-        if(visibility){
+        if (visibility) {
             viewHolder.emptyView.setVisibility(View.VISIBLE);
             viewHolder.emptyViewImage.setVisibility(View.VISIBLE);
             viewHolder.emptyViewText.setVisibility(View.VISIBLE);
             viewHolder.emptyViewButton.setVisibility(View.VISIBLE);
 
-        }else if(!visibility) {
+        } else {
             viewHolder.emptyView.setVisibility(View.GONE);
             viewHolder.emptyViewImage.setVisibility(View.GONE);
             viewHolder.emptyViewText.setVisibility(View.GONE);
@@ -167,22 +190,51 @@ public abstract class AbstractFragment extends Fragment implements LoaderCallbac
 
         }
     }
-    public void setEmptyView(int resId, String textView, String buttonText){
+
+    public void setEmptyView(int resId, String textView, String buttonText) {
+        viewHolder.loadingBar.setVisibility(View.GONE);
+        viewHolder.emptyView.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.lightGray));
         viewHolder.emptyViewImage.setImageResource(resId);
         viewHolder.emptyViewText.setText(textView);
         viewHolder.emptyViewButton.setText(buttonText);
+        viewHolder.emptyViewButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                startLoading(LOADER_CONSTANT);
+            }
+        });
     }
 
-    public void populateViews(ViewHolder viewHolder, LayoutInflater inflater, ViewGroup container){
-        viewHolder.rootView =  inflater.inflate(R.layout.news_list_view, container, false);
+
+    public void populateViews(ViewHolder viewHolder, LayoutInflater inflater, ViewGroup container) {
+        viewHolder.rootView = inflater.inflate(R.layout.news_list_view, container, false);
         viewHolder.emptyView = (LinearLayout) viewHolder.rootView.findViewById(R.id.empty_view_container);
         viewHolder.emptyView.setVisibility(View.GONE);
         viewHolder.listView = (ListView) viewHolder.rootView.findViewById(R.id.list);
         viewHolder.loadingBar = (ProgressBar) viewHolder.rootView.findViewById(R.id.loading_bar);
         viewHolder.loadingText = (TextView) viewHolder.rootView.findViewById(R.id.loading_text);
-
         viewHolder.emptyViewImage = (ImageView) viewHolder.rootView.findViewById(R.id.empty_view_image);
         viewHolder.emptyViewText = (TextView) viewHolder.rootView.findViewById(R.id.empty_view_text);
         viewHolder.emptyViewButton = (Button) viewHolder.rootView.findViewById(R.id.empty_view_button);
     }
+
+    /**
+     * check network connection
+     *
+     * @return boolean
+     */
+    private boolean checkNetWorkConnection() {
+
+        ConnectivityManager cm = (ConnectivityManager) getContext().getSystemService(CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+
+        if (activeNetwork != null && activeNetwork.isConnectedOrConnecting()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+
 }

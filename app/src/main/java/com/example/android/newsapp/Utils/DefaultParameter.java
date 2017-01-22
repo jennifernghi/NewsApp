@@ -17,6 +17,11 @@ public final class DefaultParameter {
     public static final String DEFAULT_SPORT_SECTION = "sport";
     public static final String DEFAULT_TECH_SECTION = "technology";
     public static final String DEFAULT_WORLD_SECTION = "world";
+
+    public static final int DEFAULT_US_CONSTANT = 0;
+    public static final int DEFAULT_SPORT_CONSTANT = 1;
+    public static final int DEFAULT_TECH_CONSTANT = 2;
+    public static final int DEFAULT_WORLD_CONSTANT = 3;
     private DefaultParameter() {
 
     }

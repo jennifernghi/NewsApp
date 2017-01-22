@@ -15,6 +15,7 @@ public class MainActivity extends AppCompatActivity {
     private ViewPagerAdapter adapter;
 
 
+
     static class ViewHolder {
         private TabLayout tabLayout;
         private ViewPager viewPager;
@@ -35,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
         viewHolder.viewPager.setOffscreenPageLimit(4);
         viewHolder.viewPager.setCurrentItem(0);
 
+        //viewHolder.viewPager.addOnPageChangeListener(pageChangeListener);
         viewHolder.tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
         viewHolder.tabLayout.setupWithViewPager(viewHolder.viewPager);
 

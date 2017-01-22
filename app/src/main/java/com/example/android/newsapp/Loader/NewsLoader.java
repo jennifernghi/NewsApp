@@ -38,6 +38,11 @@ public class NewsLoader extends AsyncTaskLoader<List<News>> {
             return null;
         }
 
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         String url = QueryUtils.buildURI(baseurl,section);
 
         Log.i(LOG_TAG, url);
@@ -54,7 +59,9 @@ public class NewsLoader extends AsyncTaskLoader<List<News>> {
     @Override
     public void onCanceled(List<News> data) {
         super.onCanceled(data);
+        if(data!=null){
+            data.clear();
+        }
 
-        data.clear();
     }
 }
