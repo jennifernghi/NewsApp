@@ -1,5 +1,6 @@
 package com.example.android.newsapp.activities;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,7 +16,7 @@ public class SportFragment extends AbstractFragment {
     final String LOG_TAG = SportFragment.class.getSimpleName();
 
     public SportFragment() {
-        super(DefaultParameter.DEFAULT_SPORT_SECTION, DefaultParameter.DEFAULT_SPORT_CONSTANT);
+        super( DefaultParameter.DEFAULT_SPORT_SECTION);
         Log.i(LOG_TAG, "in sport fragment constructor");
     }
 
@@ -25,6 +26,7 @@ public class SportFragment extends AbstractFragment {
         super.onSaveInstanceState(outState);
 
     }
+
 
 
 }

@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.util.Log;
 
 import com.example.android.newsapp.R;
+import com.example.android.newsapp.Utils.DefaultParameter;
 import com.example.android.newsapp.activities.SportFragment;
 import com.example.android.newsapp.activities.TechFragment;
 import com.example.android.newsapp.activities.USFragment;
@@ -63,4 +64,6 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
         }
 
     }
+
+
 }

@@ -33,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
         viewHolder.viewPager = (ViewPager) findViewById(R.id.viewpager);
         adapter = new ViewPagerAdapter(getSupportFragmentManager(), this);
         viewHolder.viewPager.setAdapter(adapter);
-        viewHolder.viewPager.setOffscreenPageLimit(4);
+        viewHolder.viewPager.setOffscreenPageLimit(adapter.getCount());
         viewHolder.viewPager.setCurrentItem(0);
 
         //viewHolder.viewPager.addOnPageChangeListener(pageChangeListener);

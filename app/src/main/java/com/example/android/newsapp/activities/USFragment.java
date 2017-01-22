@@ -1,5 +1,6 @@
 package com.example.android.newsapp.activities;
 
+import android.content.Context;
 import android.util.Log;
 
 import com.example.android.newsapp.Utils.DefaultParameter;
@@ -12,8 +13,9 @@ public class USFragment extends AbstractFragment {
 
     final String LOG_TAG = USFragment.class.getSimpleName();
 
+
     public USFragment() {
-        super(DefaultParameter.DEFAULT_US_SECTION, DefaultParameter.DEFAULT_US_CONSTANT);
+        super(DefaultParameter.DEFAULT_US_SECTION);
         Log.i(LOG_TAG, "USFragment constructor");
     }
 

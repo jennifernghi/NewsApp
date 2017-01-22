@@ -1,5 +1,6 @@
 package com.example.android.newsapp.activities;
 
+import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -39,12 +40,12 @@ public abstract class AbstractFragment extends Fragment implements LoaderCallbac
     private NewsAdapter adapter;
     private String baseUrl = DefaultParameter.DEFAULT_BASE_URL;
     private final int LOADER_CONSTANT = 1;
-    private int loaderConstant;
     private ViewHolder viewHolder;
+    private Context context;
+    private boolean started = false;
 
-    public AbstractFragment(String section, int loaderConstant) {
+    public AbstractFragment(String section) {
         this.section = section;
-        this.loaderConstant = loaderConstant;
         Log.i(LOG_TAG, "in AbstractFragment constructor");
     }
 
@@ -83,8 +84,10 @@ public abstract class AbstractFragment extends Fragment implements LoaderCallbac
     public void onStart() {
         super.onStart();
         Log.i(LOG_TAG, "in onstart");
+        started = true;
 
         startLoading(LOADER_CONSTANT);
+
     }
 
 
@@ -105,11 +108,11 @@ public abstract class AbstractFragment extends Fragment implements LoaderCallbac
 
     @Override
     public void onLoadFinished(Loader<List<News>> loader, List<News> data) {
-        Log.i(LOG_TAG, "in on load finished");
-        Log.i(LOG_TAG, "constant" + LOADER_CONSTANT);
-        enableEmptyView(true);
 
         clearAdapter();
+        enableEmptyView(true);
+
+
         if (data != null && !data.isEmpty()) {
             showProgressBar(false);
             adapter.addAll(data);
@@ -122,7 +125,6 @@ public abstract class AbstractFragment extends Fragment implements LoaderCallbac
     @Override
     public void onResume() {
         super.onResume();
-        Log.i(LOG_TAG, "in on resume");
 
         reStartLoading(LOADER_CONSTANT);
 
@@ -141,6 +143,7 @@ public abstract class AbstractFragment extends Fragment implements LoaderCallbac
         if (checkNetWorkConnection()) {
             showProgressBar(true);
             enableEmptyView(false);
+            clearAdapter();
             getLoaderManager().initLoader(fragmentConstant, null, this).forceLoad();
         } else {
             enableEmptyView(true);
@@ -155,6 +158,7 @@ public abstract class AbstractFragment extends Fragment implements LoaderCallbac
         if (checkNetWorkConnection()) {
             showProgressBar(true);
             enableEmptyView(false);
+            clearAdapter();
             getLoaderManager().getLoader(fragmentConstant).forceLoad();
         } else {
             enableEmptyView(true);
@@ -234,6 +238,12 @@ public abstract class AbstractFragment extends Fragment implements LoaderCallbac
         } else {
             return false;
         }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        clearAdapter();
     }
 
 
