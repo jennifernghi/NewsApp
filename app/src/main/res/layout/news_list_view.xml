@@ -16,7 +16,7 @@
         android:maxHeight="20dp"
         android:minHeight="20dp"
         android:theme="@style/LinearProgress" />
-    
+
 
     <ListView
         android:id="@+id/list"
