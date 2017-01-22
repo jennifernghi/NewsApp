@@ -18,4 +18,15 @@ public class WorldFragment extends AbstractFragment {
     }
 
 
+    @Override
+    public void onStart() {
+        Log.i(LOG_TAG, "in on start");
+        super.onStart();
+    }
+
+    @Override
+    public void onResume() {
+        Log.i(LOG_TAG, "in on resume");
+        super.onResume();
+    }
 }

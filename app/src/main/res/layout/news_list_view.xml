@@ -19,13 +19,16 @@
 
 
     <ListView
+        android:layout_marginTop="8dp"
         android:id="@+id/list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/loading_bar"
         android:divider="@android:color/transparent"
-        android:dividerHeight="0dp"
-        android:drawSelectorOnTop="true" />
+        android:dividerHeight="8dp"
+        android:drawSelectorOnTop="true"
+        android:layout_marginRight="6dp"
+        android:layout_marginLeft="6dp"/>
 
 
     <TextView

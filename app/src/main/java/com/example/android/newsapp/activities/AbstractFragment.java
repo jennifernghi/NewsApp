@@ -39,10 +39,8 @@ public abstract class AbstractFragment extends Fragment implements LoaderCallbac
     private String section;
     private NewsAdapter adapter;
     private String baseUrl = DefaultParameter.DEFAULT_BASE_URL;
-    private final int LOADER_CONSTANT = 1;
     private ViewHolder viewHolder;
-    private Context context;
-    private boolean started = false;
+
 
     public AbstractFragment(String section) {
         this.section = section;
@@ -66,7 +64,9 @@ public abstract class AbstractFragment extends Fragment implements LoaderCallbac
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Log.i(LOG_TAG, "onCreateView");
         viewHolder = new ViewHolder();
-
+        if (savedInstanceState != null) {
+            setUserVisibleHint(true);
+        }
         populateViews(viewHolder, inflater, container);
 
 
@@ -83,17 +83,15 @@ public abstract class AbstractFragment extends Fragment implements LoaderCallbac
     @Override
     public void onStart() {
         super.onStart();
-        Log.i(LOG_TAG, "in onstart");
-        started = true;
 
-        startLoading(LOADER_CONSTANT);
+        startLoading(DefaultParameter.LOADER_CONSTANT);
 
     }
 
 
     @Override
     public Loader<List<News>> onCreateLoader(int id, Bundle args) {
-        Log.i(LOG_TAG, "in oncreateloader");
+
 
         return new NewsLoader(getActivity(), baseUrl, section);
     }
@@ -101,7 +99,7 @@ public abstract class AbstractFragment extends Fragment implements LoaderCallbac
 
     @Override
     public void onLoaderReset(Loader<List<News>> loader) {
-        Log.i(LOG_TAG, "in on loader reset");
+
 
         clearAdapter();
     }
@@ -125,9 +123,7 @@ public abstract class AbstractFragment extends Fragment implements LoaderCallbac
     @Override
     public void onResume() {
         super.onResume();
-
-        reStartLoading(LOADER_CONSTANT);
-
+        reStartLoading(DefaultParameter.LOADER_CONSTANT);
     }
 
 
@@ -139,7 +135,7 @@ public abstract class AbstractFragment extends Fragment implements LoaderCallbac
     }
 
     public void startLoading(int fragmentConstant) {
-        Log.i(LOG_TAG, "initialize: start loading");
+
         if (checkNetWorkConnection()) {
             showProgressBar(true);
             enableEmptyView(false);
@@ -154,7 +150,7 @@ public abstract class AbstractFragment extends Fragment implements LoaderCallbac
     }
 
     public void reStartLoading(int fragmentConstant) {
-        Log.i(LOG_TAG, "initialize: start loading");
+
         if (checkNetWorkConnection()) {
             showProgressBar(true);
             enableEmptyView(false);
@@ -205,7 +201,7 @@ public abstract class AbstractFragment extends Fragment implements LoaderCallbac
             @Override
             public void onClick(View v) {
 
-                startLoading(LOADER_CONSTANT);
+                startLoading(DefaultParameter.LOADER_CONSTANT);
             }
         });
     }
@@ -221,6 +217,7 @@ public abstract class AbstractFragment extends Fragment implements LoaderCallbac
         viewHolder.emptyViewImage = (ImageView) viewHolder.rootView.findViewById(R.id.empty_view_image);
         viewHolder.emptyViewText = (TextView) viewHolder.rootView.findViewById(R.id.empty_view_text);
         viewHolder.emptyViewButton = (Button) viewHolder.rootView.findViewById(R.id.empty_view_button);
+
     }
 
     /**

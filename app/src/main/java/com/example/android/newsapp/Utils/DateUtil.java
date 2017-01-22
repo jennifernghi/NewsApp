@@ -14,7 +14,7 @@ import java.util.Date;
 public final class DateUtil {
 
     public static String URL_FORMAT = "yyyy-MM-DD";
-    public static String DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
+    public static String DATE_TIME_FORMAT = "MM-dd, yyyy - HH:mm";
     public static String JSON_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'";
 
     final static String LOG_TAG = DateUtil.class.getSimpleName();
