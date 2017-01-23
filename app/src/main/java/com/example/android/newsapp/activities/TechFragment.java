@@ -20,23 +20,4 @@ public class TechFragment extends AbstractFragment {
         Log.i(LOG_TAG, "in tech fragment constructor");
     }
 
-
-    @Override
-    public void onStart() {
-        super.onStart();
-
-        //startLoading(DefaultParameter.DEFAULT_TECH_CONSTANT);
-        //setMaxPage(GeneralParameter.totalSizeTechSection);
-        //Log.i(LOG_TAG, "tech max: " + getMaxPage());
-
-    }
-
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        reStartLoading(DefaultParameter.DEFAULT_TECH_CONSTANT);
-        //setMaxPage(GeneralParameter.totalSizeTechSection);
-        //Log.i(LOG_TAG, "tech max: " + getMaxPage());
-    }
 }

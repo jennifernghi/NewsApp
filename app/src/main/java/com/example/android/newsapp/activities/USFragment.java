@@ -20,25 +20,4 @@ public class USFragment extends AbstractFragment {
         Log.i(LOG_TAG, "USFragment constructor");
     }
 
-
-    @Override
-    public void onStart() {
-        super.onStart();
-
-        //startLoading(DefaultParameter.DEFAULT_US_CONSTANT);
-        //s//etMaxPage(GeneralParameter.totalSizeUSSection);
-        //Log.i(LOG_TAG, "US max: " + getMaxPage());
-
-    }
-
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        reStartLoading(DefaultParameter.DEFAULT_US_CONSTANT);
-        //Log.i(LOG_TAG, "totalSizeUSSection " + GeneralParameter.totalSizeUSSection);
-        //setMaxPage(GeneralParameter.totalSizeUSSection);
-        //Log.i(LOG_TAG, "US max: " + getMaxPage());
-    }
-
 }

@@ -24,29 +24,4 @@ public class SportFragment extends AbstractFragment {
     }
 
 
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-
-        //startLoading(DefaultParameter.DEFAULT_SPORT_CONSTANT);
-        //setMaxPage(GeneralParameter.totalSizeSportSection);
-        //Log.i(LOG_TAG, "sport max: " + getMaxPage());
-
-
-    }
-
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        reStartLoading(DefaultParameter.DEFAULT_SPORT_CONSTANT);
-       // setMaxPage(GeneralParameter.totalSizeSportSection);
-        //Log.i(LOG_TAG, "sport max: " + getMaxPage());
-    }
 }

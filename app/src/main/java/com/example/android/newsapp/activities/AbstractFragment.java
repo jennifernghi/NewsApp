@@ -105,7 +105,7 @@ public abstract class AbstractFragment extends Fragment implements LoaderCallbac
     @Override
     public void onResume() {
         super.onResume();
-        //reStartLoading(loaderConstant);
+        startLoading(loaderConstant);
     }
 
     @Override
@@ -158,22 +158,8 @@ public abstract class AbstractFragment extends Fragment implements LoaderCallbac
         }
     }
 
-    public void startLoading(int fragmentConstant) {
 
-        if (checkNetWorkConnection()) {
-            showProgressBar(true);
-            enableEmptyView(false);
-            clearAdapter();
-            getLoaderManager().initLoader(fragmentConstant, null, this).forceLoad();
-        } else {
-            enableEmptyView(true);
-            setEmptyView(R.drawable.disconnect, "Check network connection!", "Try Again!");
-
-        }
-
-    }
-
-    public void reStartLoading(int fragmentConstant) {
+    public void startLoading(int loaderConstant) {
 
         if (checkNetWorkConnection()) {
             showProgressBar(true);
@@ -225,7 +211,7 @@ public abstract class AbstractFragment extends Fragment implements LoaderCallbac
             @Override
             public void onClick(View v) {
 
-                startLoading(DefaultParameter.LOADER_CONSTANT);
+                startLoading(loaderConstant);
             }
         });
     }
@@ -253,7 +239,7 @@ public abstract class AbstractFragment extends Fragment implements LoaderCallbac
                 Log.i(LOG_TAG, "max " + maxPage);
                 if (temp <= maxPage) {
                     Log.i(LOG_TAG, "page: " + temp);
-                    reStartLoading(loaderConstant);
+                    startLoading(loaderConstant);
                 } else {
                     Toast.makeText(getContext(), "you are at the end of the list.", Toast.LENGTH_LONG).show();
                 }
@@ -265,7 +251,7 @@ public abstract class AbstractFragment extends Fragment implements LoaderCallbac
             public void onClick(View v) {
                 int temp = --page;
                 if (temp >= 1) {
-                    reStartLoading(loaderConstant);
+                    startLoading(loaderConstant);
                 } else {
                     Toast.makeText(getContext(), "you are at the beginning of the list.", Toast.LENGTH_LONG).show();
                 }
@@ -296,7 +282,7 @@ public abstract class AbstractFragment extends Fragment implements LoaderCallbac
         super.onDetach();
         clearAdapter();
     }
-    
+
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
