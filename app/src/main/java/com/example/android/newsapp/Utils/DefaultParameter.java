@@ -23,8 +23,7 @@ public final class DefaultParameter {
     public static final int DEFAULT_TECH_CONSTANT = 2;
     public static final int DEFAULT_WORLD_CONSTANT = 3;
 
-    public static final int LOADER_CONSTANT = 1;
     private DefaultParameter() {
-
+        throw new AssertionError("can't instantiate DefaultParameter");
     }
 }

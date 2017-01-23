@@ -1,7 +1,9 @@
 package com.example.android.newsapp.models;
 
 import android.graphics.Bitmap;
+
 import java.util.Date;
+
 /**
  * Created by jennifernghinguyen on 1/17/17.
  */

@@ -1,22 +1,19 @@
 package com.example.android.newsapp.activities;
 
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
-import android.view.Window;
 import android.view.WindowManager;
 
 import com.example.android.newsapp.R;
 import com.example.android.newsapp.adapters.ViewPagerAdapter;
 
+
 public class MainActivity extends AppCompatActivity {
     final static String LOG_TAG = MainActivity.class.getSimpleName();
 
     private ViewPagerAdapter adapter;
-
 
 
     static class ViewHolder {
@@ -29,9 +26,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_main);
-        Log.i(LOG_TAG, "in onCreate");
 
         ViewHolder viewHolder = new ViewHolder();
         viewHolder.viewPager = (ViewPager) findViewById(R.id.viewpager);
@@ -40,11 +36,8 @@ public class MainActivity extends AppCompatActivity {
         viewHolder.viewPager.setOffscreenPageLimit(adapter.getCount());
         viewHolder.viewPager.setCurrentItem(0);
 
-        //viewHolder.viewPager.addOnPageChangeListener(pageChangeListener);
         viewHolder.tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
         viewHolder.tabLayout.setupWithViewPager(viewHolder.viewPager);
-
-
 
 
     }

@@ -17,6 +17,9 @@ public final class DateUtil {
     public static String DATE_TIME_FORMAT = "MM-dd, yyyy - HH:mm";
     public static String JSON_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'";
 
+    private DateUtil(){
+        throw new AssertionError("can't instantiate Date Util");
+    }
     final static String LOG_TAG = DateUtil.class.getSimpleName();
 
     public static Date getTodayDate() {

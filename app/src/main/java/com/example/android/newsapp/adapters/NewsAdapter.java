@@ -14,7 +14,6 @@ import com.example.android.newsapp.models.News;
 
 import java.util.List;
 
-import static com.example.android.newsapp.Utils.DateUtil.DATE_TIME_FORMAT;
 import static com.example.android.newsapp.Utils.DateUtil.formatDate;
 
 /**
@@ -22,6 +21,8 @@ import static com.example.android.newsapp.Utils.DateUtil.formatDate;
  */
 
 public class NewsAdapter extends ArrayAdapter<News> {
+    private Context context;
+
     static class ViewHolder {
         private ImageView newsThumbnailImageView;
         private TextView headLineTextView;
@@ -30,10 +31,13 @@ public class NewsAdapter extends ArrayAdapter<News> {
         private TextView sectionTextView;
         private TextView trailTextTextView;
 
+
     }
 
     public NewsAdapter(Context context, List<News> objects) {
+
         super(context, 0, objects);
+        this.context = context;
     }
 
 
@@ -59,23 +63,23 @@ public class NewsAdapter extends ArrayAdapter<News> {
         viewHolder.headLineTextView.setText(currentNews.getHeadLine());
 
         //set author
-        if(!currentNews.getContributor().equals("")){
-            viewHolder.contributorTextView.setText("Contributor: "+currentNews.getContributor());
-        }else{
-            viewHolder.contributorTextView.setText("Contributor: Anonymous");
+        if (!currentNews.getContributor().equals(context.getString(R.string.empty_string))) {
+            viewHolder.contributorTextView.setText(context.getString(R.string.adapter_contributor) + currentNews.getContributor());
+        } else {
+            viewHolder.contributorTextView.setText(context.getString(R.string.adapter_contributor_anonymous));
         }
 
 
         //set published date
-        if(currentNews.getPublishedDate()!=null) {
+        if (currentNews.getPublishedDate() != null) {
             viewHolder.publishedDateTextView.setText(formatDate(DateUtil.DATE_TIME_FORMAT, currentNews.getPublishedDate()));
-        }else {
+        } else {
             viewHolder.publishedDateTextView.setVisibility(View.GONE);
         }
 
 
         //set section
-        viewHolder.sectionTextView.setText("Section: "+currentNews.getSection());
+        viewHolder.sectionTextView.setText(context.getString(R.string.adapter_section) + currentNews.getSection());
 
         //set trailText
         viewHolder.trailTextTextView.setText(currentNews.getTrailText());

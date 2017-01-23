@@ -1,10 +1,12 @@
 package com.example.android.newsapp.Utils;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.util.Log;
 
+import com.example.android.newsapp.R;
 import com.example.android.newsapp.models.News;
 
 import org.json.JSONArray;
@@ -30,9 +32,10 @@ import static com.example.android.newsapp.Utils.DateUtil.JSON_FORMAT;
 
 public final class QueryUtils {
     final static String LOG_TAG = QueryUtils.class.getSimpleName();
+    public static Context context;
 
     private QueryUtils() {
-
+        throw new AssertionError("can't instantiate Query Util");
     }
 
     /**
@@ -42,22 +45,22 @@ public final class QueryUtils {
      * @param section - sectionId
      * @return
      */
-    public static String buildURI(String urlBase, String section, int page) {
+    public static String buildURI(Context ct, String urlBase, String section, int page) {
+        context = ct;
         if (urlBase == null && section == null && page < 1) {
             return null;
         }
         Uri base = Uri.parse(urlBase);
         Uri.Builder builder = base.buildUpon();
         builder.path(section);
-        builder.appendQueryParameter("api-key", DefaultParameter.DEFAULT_API_KEY);
-        builder.appendQueryParameter("show-fields", DefaultParameter.DEFAULT_FIELDS);
-        builder.appendQueryParameter("order-by", DefaultParameter.DEFAULT_ORDER_BY);
-        builder.appendQueryParameter("from-date", DateUtil.formatDate(DateUtil.URL_FORMAT, DateUtil.getXDaysBeforeToday(10)));// 10 days before today
-        builder.appendQueryParameter("to-date", DateUtil.formatDate(DateUtil.URL_FORMAT, DateUtil.getTodayDate())); // today' date
-        builder.appendQueryParameter("page-size", String.valueOf(DefaultParameter.DEFAULT_PAGE_SIZE));
-        // builder.appendQueryParameter("page", String.valueOf(DefaultParameter.DEFAULT_PAGE));
-        builder.appendQueryParameter("page", String.valueOf(page));
-        builder.appendQueryParameter("show-tags", DefaultParameter.DEFAULT_TAGS);
+        builder.appendQueryParameter(context.getString(R.string.query_util_api_key_param), DefaultParameter.DEFAULT_API_KEY);
+        builder.appendQueryParameter(context.getString(R.string.query_util_show_field_param), DefaultParameter.DEFAULT_FIELDS);
+        builder.appendQueryParameter(context.getString(R.string.query_util_order_by_param), DefaultParameter.DEFAULT_ORDER_BY);
+        builder.appendQueryParameter(context.getString(R.string.query_util_from_date_param), DateUtil.formatDate(DateUtil.URL_FORMAT, DateUtil.getXDaysBeforeToday(10)));// 10 days before today
+        builder.appendQueryParameter(context.getString(R.string.query_util_to_date_param), DateUtil.formatDate(DateUtil.URL_FORMAT, DateUtil.getTodayDate())); // today' date
+        builder.appendQueryParameter(context.getString(R.string.query_util_page_size_param), String.valueOf(DefaultParameter.DEFAULT_PAGE_SIZE));
+        builder.appendQueryParameter(context.getString(R.string.query_util_page_param), String.valueOf(page));
+        builder.appendQueryParameter(context.getString(R.string.query_util_show_tags_param), DefaultParameter.DEFAULT_TAGS);
 
         return builder.toString().replace("%2C", ",");
     }
@@ -75,10 +78,9 @@ public final class QueryUtils {
             try {
                 url = new URL(urlString);
             } catch (MalformedURLException e) {
-                Log.e(LOG_TAG, "error createURL(): can't create URL");
+                Log.e(LOG_TAG, context.getString(R.string.query_util_error_create_url));
             }
         }
-        // Log.i(LOG_TAG, "url: "+ url);
         return url;
     }
 
@@ -87,7 +89,7 @@ public final class QueryUtils {
      */
 
     public static String downloadJsonResponse(URL url) throws IOException {
-        String response = "";
+        String response = context.getString(R.string.empty_string);
         if (url == null) {
             return response;
         }
@@ -104,11 +106,9 @@ public final class QueryUtils {
             if (httpURLConnection.getResponseCode() == 200) {
                 inputStream = httpURLConnection.getInputStream();
                 response = getResponseFromStream(inputStream);
-            } else {
-                Log.e(LOG_TAG, "error: response code = " + httpURLConnection.getResponseCode());
             }
         } catch (IOException e) {
-            Log.e(LOG_TAG, "error downloadJsonResponse(): can't make connection");
+            Log.e(LOG_TAG, context.getString(R.string.query_util_error_connection));
         } finally {
             if (httpURLConnection != null) {
                 httpURLConnection.disconnect();
@@ -152,38 +152,34 @@ public final class QueryUtils {
         try {
             JSONObject root = new JSONObject(jsonResponse);
 
-            JSONObject response = root.getJSONObject("response");
+            JSONObject response = root.getJSONObject(context.getString(R.string.query_util_json_response));
 
             if (sectionName.equals(DefaultParameter.DEFAULT_US_SECTION)) {
-                GeneralParameter.totalSizeUSSection = Integer.valueOf(extractString(response, "pages"));
-                Log.i(LOG_TAG, "US: "+GeneralParameter.totalSizeUSSection);
+                GeneralParameter.totalSizeUSSection = Integer.valueOf(extractString(response, context.getString(R.string.query_util_json_pages)));
             } else if (sectionName.equals(DefaultParameter.DEFAULT_WORLD_SECTION)) {
-                GeneralParameter.totalSizeWorldSection = Integer.valueOf(extractString(response, "pages"));
-                Log.i(LOG_TAG, "World: "+GeneralParameter.totalSizeWorldSection);
+                GeneralParameter.totalSizeWorldSection = Integer.valueOf(extractString(response, context.getString(R.string.query_util_json_pages)));
             } else if (sectionName.equals(DefaultParameter.DEFAULT_TECH_SECTION)) {
-                GeneralParameter.totalSizeTechSection = Integer.valueOf(extractString(response, "pages"));
-                Log.i(LOG_TAG, "Tech: "+GeneralParameter.totalSizeTechSection);
+                GeneralParameter.totalSizeTechSection = Integer.valueOf(extractString(response, context.getString(R.string.query_util_json_pages)));
             } else {
-                GeneralParameter.totalSizeSportSection = Integer.valueOf(extractString(response, "pages"));
-                Log.i(LOG_TAG, "Sport: "+GeneralParameter.totalSizeSportSection);
+                GeneralParameter.totalSizeSportSection = Integer.valueOf(extractString(response, context.getString(R.string.query_util_json_pages)));
             }
 
-            JSONArray results = response.getJSONArray("results");
+            JSONArray results = response.getJSONArray(context.getString(R.string.query_util_json_results));
 
 
             for (int i = 0; i < results.length(); i++) {
                 JSONObject newInfo = (JSONObject) results.get(i);
 
 
-                String section = extractString(newInfo, "sectionName");
+                String section = extractString(newInfo, context.getString(R.string.query_util_json_section_name));
 
 
-                Date publishedDate = DateUtil.getDate(JSON_FORMAT, extractString(newInfo, "webPublicationDate"));
+                Date publishedDate = DateUtil.getDate(JSON_FORMAT, extractString(newInfo, context.getString(R.string.query_util_json_web_publication_date)));
 
-                String webUrl = extractString(newInfo, "webUrl");
+                String webUrl = extractString(newInfo, context.getString(R.string.query_util_json_web_url));
 
 
-                JSONArray tags = newInfo.getJSONArray("tags");
+                JSONArray tags = newInfo.getJSONArray(context.getString(R.string.query_util_json_tags));
 
 
                 String contributor = null;
@@ -191,22 +187,22 @@ public final class QueryUtils {
                     JSONObject contributorTag = (JSONObject) tags.get(0);
 
 
-                    contributor = extractString(contributorTag, "webTitle");
+                    contributor = extractString(contributorTag, context.getString(R.string.query_util_json_web_title));
 
                 } else {
-                    contributor = "";
-                    Log.i(LOG_TAG, "no contributor ");
+                    //no contributor
+                    contributor = context.getString(R.string.empty_string);
                 }
-                JSONObject fields = newInfo.getJSONObject("fields");
+                JSONObject fields = newInfo.getJSONObject(context.getString(R.string.query_util_json_fields));
 
 
-                String headline = extractString(fields, "headline");
+                String headline = extractString(fields, context.getString(R.string.query_util_json_headline));
 
 
-                String trailText = extractString(fields, "trailText");
+                String trailText = extractString(fields, context.getString(R.string.query_util_json_trailText));
 
 
-                String thumbnailUrl = extractString(fields, "thumbnail");
+                String thumbnailUrl = extractString(fields, context.getString(R.string.query_util_json_thumbnail));
 
 
                 Bitmap thumbnail = null;
@@ -222,7 +218,7 @@ public final class QueryUtils {
 
             }
         } catch (JSONException e) {
-            Log.e(LOG_TAG, "error extractNews(): parsing problem");
+            Log.e(LOG_TAG, context.getString(R.string.query_util_error_extracting));
         }
         return news;
     }
@@ -237,7 +233,7 @@ public final class QueryUtils {
                 in = createURL(thumbnailUrl).openStream();
 
             } catch (IOException e) {
-                Log.e(LOG_TAG, "error makeBitmap(): can't open stream");
+                Log.e(LOG_TAG, context.getString(R.string.query_util_error_bitmap));
             }
 
             if (in != null) {
@@ -253,13 +249,13 @@ public final class QueryUtils {
         try {
             str = newInfo.getString(stringName);
         } catch (JSONException e) {
-            Log.e(LOG_TAG, "error: extractString(), can't extract string: " + stringName);
+            Log.e(LOG_TAG, context.getString(R.string.query_util_error_extract_string) + stringName);
         }
 
         if (str != null) {
             return str;
         } else {
-            return "";
+            return context.getString(R.string.empty_string);
         }
     }
 
@@ -267,14 +263,14 @@ public final class QueryUtils {
         ArrayList<News> news = new ArrayList<>();
         URL url = createURL(urlString);
 
-        String response = "";
+        String response = context.getString(R.string.empty_string);
         try {
             response = downloadJsonResponse(url);
         } catch (IOException e) {
-            Log.e(LOG_TAG, "error fetchNewsData(), can't downloadJsonResponse");
+            Log.e(LOG_TAG, context.getString(R.string.query_util_error_fetch_data));
         }
 
-        if (!response.equals("")) {
+        if (!response.equals(context.getString(R.string.empty_string))) {
             news = extractNews(response, section);
         }
 

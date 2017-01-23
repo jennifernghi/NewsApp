@@ -1,6 +1,7 @@
 package com.example.android.newsapp.activities;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -9,7 +10,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.Loader;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,10 +37,10 @@ import static android.content.Context.LAYOUT_INFLATER_SERVICE;
 
 /**
  * Created by jennifernghinguyen on 1/17/17.
+ * abstract class, can't instantiated
  */
 
 public abstract class AbstractFragment extends Fragment implements LoaderCallbacks<List<News>> {
-    final String LOG_TAG = AbstractFragment.class.getSimpleName();
     private String section;
     private NewsAdapter adapter;
     private String baseUrl = DefaultParameter.DEFAULT_BASE_URL;
@@ -49,37 +49,26 @@ public abstract class AbstractFragment extends Fragment implements LoaderCallbac
     private int loaderConstant;
     private int maxPage = 0;
 
-
+    /**
+     * constructor
+     *
+     * @param loaderConstant
+     * @param section
+     * @param page
+     */
     public AbstractFragment(int loaderConstant, String section, int page) {
         this.loaderConstant = loaderConstant;
         this.section = section;
         this.page = page;
     }
 
-    static class ViewHolder {
-
-        private ListView listView;
-        private View rootView;
-        private ProgressBar loadingBar;
-        private TextView loadingText;
-        private LinearLayout emptyView;
-        private ImageView emptyViewImage;
-        private TextView emptyViewText;
-        private Button emptyViewButton;
-        private View footView;
-        private TextView nextButton;
-        private TextView previousButton;
-
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        Log.i(LOG_TAG, "onCreateView");
         viewHolder = new ViewHolder();
         if (savedInstanceState != null) {
 
-            page = savedInstanceState.getInt("page");
-            maxPage = savedInstanceState.getInt("maxPage");
+            page = savedInstanceState.getInt(getContext().getString(R.string.page));
+            maxPage = savedInstanceState.getInt(getContext().getString(R.string.maxPage));
         }
         populateViews(viewHolder, inflater, container);
 
@@ -103,7 +92,6 @@ public abstract class AbstractFragment extends Fragment implements LoaderCallbac
 
     }
 
-
     @Override
     public void onResume() {
         super.onResume();
@@ -114,7 +102,6 @@ public abstract class AbstractFragment extends Fragment implements LoaderCallbac
     public Loader<List<News>> onCreateLoader(int id, Bundle args) {
         return new NewsLoader(getActivity(), baseUrl, section, page);
     }
-
 
     @Override
     public void onLoaderReset(Loader<List<News>> loader) {
@@ -131,6 +118,7 @@ public abstract class AbstractFragment extends Fragment implements LoaderCallbac
         if (data != null && !data.isEmpty()) {
             showProgressBar(false);
             adapter.addAll(data);
+            // update max page for appropriate fragments
             if (loader.getId() == DefaultParameter.DEFAULT_US_CONSTANT) {
                 maxPage = GeneralParameter.totalSizeUSSection;
             } else if (loader.getId() == DefaultParameter.DEFAULT_WORLD_CONSTANT) {
@@ -147,7 +135,6 @@ public abstract class AbstractFragment extends Fragment implements LoaderCallbac
         }
     }
 
-
     public void clearAdapter() {
         if (adapter != null) {
             adapter.clear();
@@ -155,6 +142,11 @@ public abstract class AbstractFragment extends Fragment implements LoaderCallbac
         }
     }
 
+    /**
+     * start loader here
+     *
+     * @param loaderConstant
+     */
 
     public void startLoading(int loaderConstant) {
 
@@ -170,6 +162,11 @@ public abstract class AbstractFragment extends Fragment implements LoaderCallbac
 
     }
 
+    /**
+     * show progress bar ui
+     *
+     * @param on
+     */
 
     public void showProgressBar(boolean on) {
         if (on) {
@@ -181,6 +178,11 @@ public abstract class AbstractFragment extends Fragment implements LoaderCallbac
         }
     }
 
+    /**
+     * show empty view ui
+     *
+     * @param visibility
+     */
     public void enableEmptyView(boolean visibility) {
         if (visibility) {
             viewHolder.emptyView.setVisibility(View.VISIBLE);
@@ -189,6 +191,7 @@ public abstract class AbstractFragment extends Fragment implements LoaderCallbac
             viewHolder.emptyViewButton.setVisibility(View.VISIBLE);
 
         } else {
+            viewHolder.emptyView.setBackgroundColor(Color.TRANSPARENT);
             viewHolder.emptyView.setVisibility(View.GONE);
             viewHolder.emptyViewImage.setVisibility(View.GONE);
             viewHolder.emptyViewText.setVisibility(View.GONE);
@@ -197,6 +200,13 @@ public abstract class AbstractFragment extends Fragment implements LoaderCallbac
         }
     }
 
+    /**
+     * set empty view ui: imageview, text, button text
+     *
+     * @param resId      - resource id for image view
+     * @param textView   - text for text view
+     * @param buttonText - text for button
+     */
     public void setEmptyView(int resId, String textView, String buttonText) {
         viewHolder.loadingBar.setVisibility(View.GONE);
         viewHolder.emptyView.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.lightGray));
@@ -212,8 +222,30 @@ public abstract class AbstractFragment extends Fragment implements LoaderCallbac
         });
     }
 
+    /**
+     * show and set up empty view for losing internet connection
+     */
+    public void lostInternetConnectionEmptyView() {
+        enableEmptyView(true);
+        setEmptyView(R.drawable.disconnect, getString(R.string.empty_text_network), getString(R.string.empty_button));
+    }
 
-    public void populateViews(ViewHolder viewHolder, LayoutInflater inflater, ViewGroup container) {
+    /**
+     * show and set up empty view for failing retrieving data
+     */
+    public void lostDataEmptyView() {
+        enableEmptyView(true);
+        setEmptyView(R.drawable.error, getString(R.string.empty_text_data), getString(R.string.empty_button));
+    }
+
+    /**
+     * populate all views, called inside oncreateview
+     *
+     * @param viewHolder
+     * @param inflater
+     * @param container
+     */
+    public void populateViews(final ViewHolder viewHolder, LayoutInflater inflater, ViewGroup container) {
         viewHolder.rootView = inflater.inflate(R.layout.news_list_view, container, false);
         viewHolder.footView = ((LayoutInflater) getContext().getSystemService(LAYOUT_INFLATER_SERVICE)).inflate(R.layout.news_list_view_footer, null, false);
         viewHolder.emptyView = (LinearLayout) viewHolder.rootView.findViewById(R.id.empty_view_container);
@@ -231,14 +263,12 @@ public abstract class AbstractFragment extends Fragment implements LoaderCallbac
             @Override
             public void onClick(View v) {
                 if (checkNetWorkConnection()) {
+                    enableEmptyView(false);
                     int temp = ++page;
-                    Log.i(LOG_TAG, "temp " + temp);
-                    Log.i(LOG_TAG, "max " + maxPage);
                     if (temp <= maxPage) {
-                        Log.i(LOG_TAG, "page: " + temp);
                         startLoading(loaderConstant);
                     } else {
-                        Toast.makeText(getContext(), "you are at the end of the list.", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getContext(), getContext().getString(R.string.toast_end_of_list), Toast.LENGTH_LONG).show();
                     }
 
                 } else {
@@ -255,7 +285,7 @@ public abstract class AbstractFragment extends Fragment implements LoaderCallbac
                     if (temp >= 1) {
                         startLoading(loaderConstant);
                     } else {
-                        Toast.makeText(getContext(), "you are at the beginning of the list.", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getContext(), getContext().getString(R.string.toast_beginning_of_list), Toast.LENGTH_LONG).show();
                     }
                 } else {
                     lostInternetConnectionEmptyView();
@@ -300,21 +330,31 @@ public abstract class AbstractFragment extends Fragment implements LoaderCallbac
         clearAdapter();
     }
 
-
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putInt("page", page);
-        outState.putInt("maxPage", maxPage);
+        outState.putInt(getContext().getString(R.string.page), page);
+        outState.putInt(getContext().getString(R.string.maxPage), maxPage);
     }
 
-    public void lostInternetConnectionEmptyView() {
-        enableEmptyView(true);
-        setEmptyView(R.drawable.disconnect, "Check network connection!", "Try Again!");
+    /**
+     * hold key views for list view
+     */
+    static class ViewHolder {
+
+        private ListView listView;
+        private View rootView;
+        private ProgressBar loadingBar;
+        private TextView loadingText;
+        private LinearLayout emptyView;
+        private ImageView emptyViewImage;
+        private TextView emptyViewText;
+        private Button emptyViewButton;
+        private View footView;
+        private TextView nextButton;
+        private TextView previousButton;
+
     }
 
-    public void lostDataEmptyView() {
-        enableEmptyView(true);
-        setEmptyView(R.drawable.error, "Can't retrieve data !", "Try Again!");
-    }
+
 }
