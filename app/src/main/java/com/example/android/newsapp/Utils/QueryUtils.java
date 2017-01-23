@@ -21,9 +21,7 @@ import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
-import static android.R.string.no;
 import static com.example.android.newsapp.Utils.DateUtil.JSON_FORMAT;
 
 /**
@@ -44,8 +42,8 @@ public final class QueryUtils {
      * @param section - sectionId
      * @return
      */
-    public static String buildURI(String urlBase, String section) {
-        if (urlBase == null && section == null) {
+    public static String buildURI(String urlBase, String section, int page) {
+        if (urlBase == null && section == null && page < 1) {
             return null;
         }
         Uri base = Uri.parse(urlBase);
@@ -57,7 +55,8 @@ public final class QueryUtils {
         builder.appendQueryParameter("from-date", DateUtil.formatDate(DateUtil.URL_FORMAT, DateUtil.getXDaysBeforeToday(10)));// 10 days before today
         builder.appendQueryParameter("to-date", DateUtil.formatDate(DateUtil.URL_FORMAT, DateUtil.getTodayDate())); // today' date
         builder.appendQueryParameter("page-size", String.valueOf(DefaultParameter.DEFAULT_PAGE_SIZE));
-        builder.appendQueryParameter("page", String.valueOf(DefaultParameter.DEFAULT_PAGE));
+        // builder.appendQueryParameter("page", String.valueOf(DefaultParameter.DEFAULT_PAGE));
+        builder.appendQueryParameter("page", String.valueOf(page));
         builder.appendQueryParameter("show-tags", DefaultParameter.DEFAULT_TAGS);
 
         return builder.toString().replace("%2C", ",");
@@ -79,7 +78,7 @@ public final class QueryUtils {
                 Log.e(LOG_TAG, "error createURL(): can't create URL");
             }
         }
-       // Log.i(LOG_TAG, "url: "+ url);
+        // Log.i(LOG_TAG, "url: "+ url);
         return url;
     }
 
@@ -147,7 +146,7 @@ public final class QueryUtils {
     /**
      * extract news fron json response
      */
-    public static ArrayList<News> extractNews(String jsonResponse) {
+    public static ArrayList<News> extractNews(String jsonResponse, String sectionName) {
         ArrayList<News> news = new ArrayList<>();
 
         try {
@@ -155,6 +154,19 @@ public final class QueryUtils {
 
             JSONObject response = root.getJSONObject("response");
 
+            if (sectionName.equals(DefaultParameter.DEFAULT_US_SECTION)) {
+                GeneralParameter.totalSizeUSSection = Integer.valueOf(extractString(response, "pages"));
+                Log.i(LOG_TAG, "US: "+GeneralParameter.totalSizeUSSection);
+            } else if (sectionName.equals(DefaultParameter.DEFAULT_WORLD_SECTION)) {
+                GeneralParameter.totalSizeWorldSection = Integer.valueOf(extractString(response, "pages"));
+                Log.i(LOG_TAG, "World: "+GeneralParameter.totalSizeWorldSection);
+            } else if (sectionName.equals(DefaultParameter.DEFAULT_TECH_SECTION)) {
+                GeneralParameter.totalSizeTechSection = Integer.valueOf(extractString(response, "pages"));
+                Log.i(LOG_TAG, "Tech: "+GeneralParameter.totalSizeTechSection);
+            } else {
+                GeneralParameter.totalSizeSportSection = Integer.valueOf(extractString(response, "pages"));
+                Log.i(LOG_TAG, "Sport: "+GeneralParameter.totalSizeSportSection);
+            }
 
             JSONArray results = response.getJSONArray("results");
 
@@ -163,9 +175,7 @@ public final class QueryUtils {
                 JSONObject newInfo = (JSONObject) results.get(i);
 
 
-
                 String section = extractString(newInfo, "sectionName");
-
 
 
                 Date publishedDate = DateUtil.getDate(JSON_FORMAT, extractString(newInfo, "webPublicationDate"));
@@ -173,33 +183,27 @@ public final class QueryUtils {
                 String webUrl = extractString(newInfo, "webUrl");
 
 
-
                 JSONArray tags = newInfo.getJSONArray("tags");
 
 
-
                 String contributor = null;
-                if(tags.length()==1) {
+                if (tags.length() == 1) {
                     JSONObject contributorTag = (JSONObject) tags.get(0);
 
 
+                    contributor = extractString(contributorTag, "webTitle");
 
-                     contributor = extractString(contributorTag, "webTitle");
-
-                }else {
-                     contributor = "";
-                    Log.i(LOG_TAG, "no contributor " );
+                } else {
+                    contributor = "";
+                    Log.i(LOG_TAG, "no contributor ");
                 }
                 JSONObject fields = newInfo.getJSONObject("fields");
-
 
 
                 String headline = extractString(fields, "headline");
 
 
-
                 String trailText = extractString(fields, "trailText");
-
 
 
                 String thumbnailUrl = extractString(fields, "thumbnail");
@@ -233,7 +237,7 @@ public final class QueryUtils {
                 in = createURL(thumbnailUrl).openStream();
 
             } catch (IOException e) {
-               Log.e(LOG_TAG, "error makeBitmap(): can't open stream");
+                Log.e(LOG_TAG, "error makeBitmap(): can't open stream");
             }
 
             if (in != null) {
@@ -259,7 +263,7 @@ public final class QueryUtils {
         }
     }
 
-    public static ArrayList<News> fetchNewsData(String urlString){
+    public static ArrayList<News> fetchNewsData(String urlString, String section) {
         ArrayList<News> news = new ArrayList<>();
         URL url = createURL(urlString);
 
@@ -270,8 +274,8 @@ public final class QueryUtils {
             Log.e(LOG_TAG, "error fetchNewsData(), can't downloadJsonResponse");
         }
 
-        if(!response.equals("")){
-             news = extractNews(response);
+        if (!response.equals("")) {
+            news = extractNews(response, section);
         }
 
         return news;

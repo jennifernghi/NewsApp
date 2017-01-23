@@ -11,52 +11,57 @@
         android:layout_width="match_parent"
         android:layout_height="20dp"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="-8dp"
         android:layout_marginBottom="-8dp"
+        android:layout_marginTop="-8dp"
         android:indeterminate="true"
         android:theme="@style/LinearProgress" />
 
 
-
     <ListView
-        android:layout_marginTop="8dp"
         android:id="@+id/list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/loading_bar"
+        android:layout_marginLeft="6dp"
+        android:layout_marginRight="6dp"
+        android:layout_marginTop="8dp"
         android:divider="@android:color/transparent"
         android:dividerHeight="8dp"
-        android:drawSelectorOnTop="true"
-        android:layout_marginRight="6dp"
-        android:layout_marginLeft="6dp"/>
+        android:drawSelectorOnTop="true" />
 
-
-    <TextView
-        android:id="@+id/loading_text"
-        android:layout_width="100dp"
-        android:layout_height="50dp"
-        android:layout_centerInParent="true"
-        android:text="@string/loading"
-        android:background="@drawable/border"
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:gravity="center"
-        android:textSize="16sp" />
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/loading_text"
+            android:layout_width="100dp"
+            android:layout_height="50dp"
+            android:layout_centerInParent="true"
+            android:text="@string/loading"
+            android:textColor="@android:color/white"
+            android:textSize="18sp"
+
+            android:textStyle="bold" />
+    </LinearLayout>
 
 
     <LinearLayout
         android:id="@+id/empty_view_container"
-        android:layout_below="@id/loading_bar"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_below="@id/loading_bar"
         android:layout_centerInParent="true"
         android:gravity="center"
-        android:visibility="gone"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:visibility="gone">
 
         <ImageView
             android:id="@+id/empty_view_image"
             android:layout_width="70dp"
-            android:layout_height="70dp"
-           />
+            android:layout_height="70dp" />
 
         <TextView
             android:id="@+id/empty_view_text"

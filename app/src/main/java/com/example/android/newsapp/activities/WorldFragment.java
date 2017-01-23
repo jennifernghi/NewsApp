@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.example.android.newsapp.Utils.DefaultParameter;
+import com.example.android.newsapp.Utils.GeneralParameter;
 
 /**
  * Created by jennifernghinguyen on 1/17/17.
@@ -12,7 +13,7 @@ public class WorldFragment extends AbstractFragment {
     final String LOG_TAG = WorldFragment.class.getSimpleName();
 
     public WorldFragment() {
-        super( DefaultParameter.DEFAULT_WORLD_SECTION);
+        super(DefaultParameter.DEFAULT_WORLD_CONSTANT, DefaultParameter.DEFAULT_WORLD_SECTION, DefaultParameter.DEFAULT_PAGE);
         Log.i(LOG_TAG, "in WorldFragment constructor");
 
     }
@@ -20,13 +21,18 @@ public class WorldFragment extends AbstractFragment {
 
     @Override
     public void onStart() {
-        Log.i(LOG_TAG, "in on start");
         super.onStart();
+
+        startLoading(DefaultParameter.DEFAULT_WORLD_CONSTANT);
+        setMaxPage(GeneralParameter.totalSizeWorldSection);
+
     }
+
 
     @Override
     public void onResume() {
-        Log.i(LOG_TAG, "in on resume");
         super.onResume();
+        reStartLoading(DefaultParameter.DEFAULT_WORLD_CONSTANT);
+        setMaxPage(GeneralParameter.totalSizeWorldSection);
     }
 }

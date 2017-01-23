@@ -18,10 +18,12 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.android.newsapp.Loader.NewsLoader;
 import com.example.android.newsapp.R;
 import com.example.android.newsapp.Utils.DefaultParameter;
+import com.example.android.newsapp.Utils.GeneralParameter;
 import com.example.android.newsapp.adapters.NewsAdapter;
 import com.example.android.newsapp.models.News;
 
@@ -29,6 +31,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static android.content.Context.CONNECTIVITY_SERVICE;
+import static android.content.Context.LAYOUT_INFLATER_SERVICE;
+import static android.icu.lang.UCharacter.GraphemeClusterBreak.L;
 
 /**
  * Created by jennifernghinguyen on 1/17/17.
@@ -39,11 +43,16 @@ public abstract class AbstractFragment extends Fragment implements LoaderCallbac
     private String section;
     private NewsAdapter adapter;
     private String baseUrl = DefaultParameter.DEFAULT_BASE_URL;
+    private int page;
     private ViewHolder viewHolder;
+    private int loaderConstant;
+    private int maxPage=0;
 
 
-    public AbstractFragment(String section) {
+    public AbstractFragment(int loaderConstant, String section, int page) {
+        this.loaderConstant=loaderConstant;
         this.section = section;
+        this.page = page;
         Log.i(LOG_TAG, "in AbstractFragment constructor");
     }
 
@@ -57,6 +66,9 @@ public abstract class AbstractFragment extends Fragment implements LoaderCallbac
         private ImageView emptyViewImage;
         private TextView emptyViewText;
         private Button emptyViewButton;
+        private View footView;
+        private TextView nextButton;
+        private TextView previousButton;
 
     }
 
@@ -74,6 +86,7 @@ public abstract class AbstractFragment extends Fragment implements LoaderCallbac
         viewHolder.listView.setAdapter(adapter);
 
         viewHolder.listView.setEmptyView(viewHolder.emptyView);
+        viewHolder.listView.addFooterView(viewHolder.footView);
         enableEmptyView(false);
 
 
@@ -84,16 +97,21 @@ public abstract class AbstractFragment extends Fragment implements LoaderCallbac
     public void onStart() {
         super.onStart();
 
-        startLoading(DefaultParameter.LOADER_CONSTANT);
+       // startLoading(loaderConstant);
 
     }
 
 
     @Override
+    public void onResume() {
+        super.onResume();
+        //reStartLoading(loaderConstant);
+    }
+    @Override
     public Loader<List<News>> onCreateLoader(int id, Bundle args) {
 
 
-        return new NewsLoader(getActivity(), baseUrl, section);
+        return new NewsLoader(getActivity(), baseUrl, section, page);
     }
 
 
@@ -114,17 +132,16 @@ public abstract class AbstractFragment extends Fragment implements LoaderCallbac
         if (data != null && !data.isEmpty()) {
             showProgressBar(false);
             adapter.addAll(data);
+
+            viewHolder.listView.removeFooterView(viewHolder.footView);
+            viewHolder.listView.addFooterView(viewHolder.footView);
         } else {
             enableEmptyView(true);
 
         }
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        reStartLoading(DefaultParameter.LOADER_CONSTANT);
-    }
+
 
 
     public void clearAdapter() {
@@ -155,7 +172,7 @@ public abstract class AbstractFragment extends Fragment implements LoaderCallbac
             showProgressBar(true);
             enableEmptyView(false);
             clearAdapter();
-            getLoaderManager().getLoader(fragmentConstant).forceLoad();
+            getLoaderManager().restartLoader(loaderConstant, null, AbstractFragment.this).forceLoad();
         } else {
             enableEmptyView(true);
             setEmptyView(R.drawable.disconnect, "Check network connection!", "Try Again!");
@@ -209,6 +226,7 @@ public abstract class AbstractFragment extends Fragment implements LoaderCallbac
 
     public void populateViews(ViewHolder viewHolder, LayoutInflater inflater, ViewGroup container) {
         viewHolder.rootView = inflater.inflate(R.layout.news_list_view, container, false);
+        viewHolder.footView = ((LayoutInflater) getContext().getSystemService(LAYOUT_INFLATER_SERVICE)).inflate(R.layout.news_list_view_footer, null, false);
         viewHolder.emptyView = (LinearLayout) viewHolder.rootView.findViewById(R.id.empty_view_container);
         viewHolder.emptyView.setVisibility(View.GONE);
         viewHolder.listView = (ListView) viewHolder.rootView.findViewById(R.id.list);
@@ -217,6 +235,35 @@ public abstract class AbstractFragment extends Fragment implements LoaderCallbac
         viewHolder.emptyViewImage = (ImageView) viewHolder.rootView.findViewById(R.id.empty_view_image);
         viewHolder.emptyViewText = (TextView) viewHolder.rootView.findViewById(R.id.empty_view_text);
         viewHolder.emptyViewButton = (Button) viewHolder.rootView.findViewById(R.id.empty_view_button);
+        viewHolder.previousButton = (TextView) viewHolder.footView.findViewById(R.id.previous);
+        viewHolder.nextButton = (TextView) viewHolder.footView.findViewById(R.id.next);
+
+        viewHolder.nextButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+               int temp = ++page;
+                Log.i(LOG_TAG, "temp "+ temp);
+                Log.i(LOG_TAG, "max "+ maxPage);
+                if(temp<=maxPage) {
+                    Log.i(LOG_TAG, "page: " + temp);
+                    reStartLoading(loaderConstant);
+                }else {
+                    Toast.makeText(getContext(), "you are at the end of the list.", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+
+        viewHolder.previousButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int temp = --page;
+                if(temp>=1) {
+                    reStartLoading(loaderConstant);
+                }else {
+                    Toast.makeText(getContext(), "you are at the beginning of the list.", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
 
     }
 
@@ -243,5 +290,8 @@ public abstract class AbstractFragment extends Fragment implements LoaderCallbac
         clearAdapter();
     }
 
+    public void setMaxPage(int maxPage){
+        this.maxPage = maxPage;
+    }
 
 }
