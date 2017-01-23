@@ -1,6 +1,5 @@
 package com.example.android.newsapp.activities;
 
-import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -32,7 +31,6 @@ import java.util.List;
 
 import static android.content.Context.CONNECTIVITY_SERVICE;
 import static android.content.Context.LAYOUT_INFLATER_SERVICE;
-import static android.icu.lang.UCharacter.GraphemeClusterBreak.L;
 
 /**
  * Created by jennifernghinguyen on 1/17/17.
@@ -46,11 +44,11 @@ public abstract class AbstractFragment extends Fragment implements LoaderCallbac
     private int page;
     private ViewHolder viewHolder;
     private int loaderConstant;
-    private int maxPage=0;
+    private int maxPage = 0;
 
 
     public AbstractFragment(int loaderConstant, String section, int page) {
-        this.loaderConstant=loaderConstant;
+        this.loaderConstant = loaderConstant;
         this.section = section;
         this.page = page;
         Log.i(LOG_TAG, "in AbstractFragment constructor");
@@ -77,7 +75,9 @@ public abstract class AbstractFragment extends Fragment implements LoaderCallbac
         Log.i(LOG_TAG, "onCreateView");
         viewHolder = new ViewHolder();
         if (savedInstanceState != null) {
-            setUserVisibleHint(true);
+
+            page = savedInstanceState.getInt("page");
+            maxPage = savedInstanceState.getInt("maxPage");
         }
         populateViews(viewHolder, inflater, container);
 
@@ -97,7 +97,7 @@ public abstract class AbstractFragment extends Fragment implements LoaderCallbac
     public void onStart() {
         super.onStart();
 
-       // startLoading(loaderConstant);
+        // startLoading(loaderConstant);
 
     }
 
@@ -107,6 +107,7 @@ public abstract class AbstractFragment extends Fragment implements LoaderCallbac
         super.onResume();
         //reStartLoading(loaderConstant);
     }
+
     @Override
     public Loader<List<News>> onCreateLoader(int id, Bundle args) {
 
@@ -132,7 +133,15 @@ public abstract class AbstractFragment extends Fragment implements LoaderCallbac
         if (data != null && !data.isEmpty()) {
             showProgressBar(false);
             adapter.addAll(data);
-
+            if (loader.getId() == DefaultParameter.DEFAULT_US_CONSTANT) {
+                maxPage = GeneralParameter.totalSizeUSSection;
+            } else if (loader.getId() == DefaultParameter.DEFAULT_WORLD_CONSTANT) {
+                maxPage = GeneralParameter.totalSizeWorldSection;
+            } else if (loader.getId() == DefaultParameter.DEFAULT_TECH_CONSTANT) {
+                maxPage = GeneralParameter.totalSizeTechSection;
+            } else {
+                maxPage = GeneralParameter.totalSizeSportSection;
+            }
             viewHolder.listView.removeFooterView(viewHolder.footView);
             viewHolder.listView.addFooterView(viewHolder.footView);
         } else {
@@ -140,8 +149,6 @@ public abstract class AbstractFragment extends Fragment implements LoaderCallbac
 
         }
     }
-
-
 
 
     public void clearAdapter() {
@@ -241,13 +248,13 @@ public abstract class AbstractFragment extends Fragment implements LoaderCallbac
         viewHolder.nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               int temp = ++page;
-                Log.i(LOG_TAG, "temp "+ temp);
-                Log.i(LOG_TAG, "max "+ maxPage);
-                if(temp<=maxPage) {
+                int temp = ++page;
+                Log.i(LOG_TAG, "temp " + temp);
+                Log.i(LOG_TAG, "max " + maxPage);
+                if (temp <= maxPage) {
                     Log.i(LOG_TAG, "page: " + temp);
                     reStartLoading(loaderConstant);
-                }else {
+                } else {
                     Toast.makeText(getContext(), "you are at the end of the list.", Toast.LENGTH_LONG).show();
                 }
             }
@@ -257,9 +264,9 @@ public abstract class AbstractFragment extends Fragment implements LoaderCallbac
             @Override
             public void onClick(View v) {
                 int temp = --page;
-                if(temp>=1) {
+                if (temp >= 1) {
                     reStartLoading(loaderConstant);
-                }else {
+                } else {
                     Toast.makeText(getContext(), "you are at the beginning of the list.", Toast.LENGTH_LONG).show();
                 }
             }
@@ -289,9 +296,13 @@ public abstract class AbstractFragment extends Fragment implements LoaderCallbac
         super.onDetach();
         clearAdapter();
     }
+    
 
-    public void setMaxPage(int maxPage){
-        this.maxPage = maxPage;
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt("page", page);
+        outState.putInt("maxPage", maxPage);
     }
 
 }

@@ -23,8 +23,9 @@ public class WorldFragment extends AbstractFragment {
     public void onStart() {
         super.onStart();
 
-        startLoading(DefaultParameter.DEFAULT_WORLD_CONSTANT);
-        setMaxPage(GeneralParameter.totalSizeWorldSection);
+       // startLoading(DefaultParameter.DEFAULT_WORLD_CONSTANT);
+        //setMaxPage(GeneralParameter.totalSizeWorldSection);
+        //Log.i(LOG_TAG, "world max: " + getMaxPage());
 
     }
 
@@ -33,6 +34,7 @@ public class WorldFragment extends AbstractFragment {
     public void onResume() {
         super.onResume();
         reStartLoading(DefaultParameter.DEFAULT_WORLD_CONSTANT);
-        setMaxPage(GeneralParameter.totalSizeWorldSection);
+      //  setMaxPage(GeneralParameter.totalSizeWorldSection);
+        //Log.i(LOG_TAG, "world max: " + getMaxPage());
     }
 }

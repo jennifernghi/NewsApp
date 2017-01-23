@@ -25,8 +25,9 @@ public class USFragment extends AbstractFragment {
     public void onStart() {
         super.onStart();
 
-        startLoading(DefaultParameter.DEFAULT_US_CONSTANT);
-        setMaxPage(GeneralParameter.totalSizeUSSection);
+        //startLoading(DefaultParameter.DEFAULT_US_CONSTANT);
+        //s//etMaxPage(GeneralParameter.totalSizeUSSection);
+        //Log.i(LOG_TAG, "US max: " + getMaxPage());
 
     }
 
@@ -35,7 +36,9 @@ public class USFragment extends AbstractFragment {
     public void onResume() {
         super.onResume();
         reStartLoading(DefaultParameter.DEFAULT_US_CONSTANT);
-        setMaxPage(GeneralParameter.totalSizeUSSection);
+        //Log.i(LOG_TAG, "totalSizeUSSection " + GeneralParameter.totalSizeUSSection);
+        //setMaxPage(GeneralParameter.totalSizeUSSection);
+        //Log.i(LOG_TAG, "US max: " + getMaxPage());
     }
 
 }

@@ -25,8 +25,9 @@ public class TechFragment extends AbstractFragment {
     public void onStart() {
         super.onStart();
 
-        startLoading(DefaultParameter.DEFAULT_TECH_CONSTANT);
-        setMaxPage(GeneralParameter.totalSizeTechSection);
+        //startLoading(DefaultParameter.DEFAULT_TECH_CONSTANT);
+        //setMaxPage(GeneralParameter.totalSizeTechSection);
+        //Log.i(LOG_TAG, "tech max: " + getMaxPage());
 
     }
 
@@ -35,6 +36,7 @@ public class TechFragment extends AbstractFragment {
     public void onResume() {
         super.onResume();
         reStartLoading(DefaultParameter.DEFAULT_TECH_CONSTANT);
-        setMaxPage(GeneralParameter.totalSizeTechSection);
+        //setMaxPage(GeneralParameter.totalSizeTechSection);
+        //Log.i(LOG_TAG, "tech max: " + getMaxPage());
     }
 }

@@ -34,8 +34,9 @@ public class SportFragment extends AbstractFragment {
     public void onStart() {
         super.onStart();
 
-        startLoading(DefaultParameter.DEFAULT_SPORT_CONSTANT);
-        setMaxPage(GeneralParameter.totalSizeSportSection);
+        //startLoading(DefaultParameter.DEFAULT_SPORT_CONSTANT);
+        //setMaxPage(GeneralParameter.totalSizeSportSection);
+        //Log.i(LOG_TAG, "sport max: " + getMaxPage());
 
 
     }
@@ -45,6 +46,7 @@ public class SportFragment extends AbstractFragment {
     public void onResume() {
         super.onResume();
         reStartLoading(DefaultParameter.DEFAULT_SPORT_CONSTANT);
-        setMaxPage(GeneralParameter.totalSizeSportSection);
+       // setMaxPage(GeneralParameter.totalSizeSportSection);
+        //Log.i(LOG_TAG, "sport max: " + getMaxPage());
     }
 }
