@@ -59,7 +59,12 @@ public class NewsAdapter extends ArrayAdapter<News> {
         viewHolder.headLineTextView.setText(currentNews.getHeadLine());
 
         //set author
-        viewHolder.contributorTextView.setText(currentNews.getContributor());
+        if(!currentNews.getContributor().equals("")){
+            viewHolder.contributorTextView.setText("Contributor: "+currentNews.getContributor());
+        }else{
+            viewHolder.contributorTextView.setText("Contributor: Anonymous");
+        }
+
 
         //set published date
         if(currentNews.getPublishedDate()!=null) {
@@ -70,7 +75,7 @@ public class NewsAdapter extends ArrayAdapter<News> {
 
 
         //set section
-        viewHolder.sectionTextView.setText(currentNews.getSection());
+        viewHolder.sectionTextView.setText("Section: "+currentNews.getSection());
 
         //set trailText
         viewHolder.trailTextTextView.setText(currentNews.getTrailText());

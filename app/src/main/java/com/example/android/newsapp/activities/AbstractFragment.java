@@ -1,7 +1,9 @@
 package com.example.android.newsapp.activities;
 
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
@@ -11,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -51,7 +54,6 @@ public abstract class AbstractFragment extends Fragment implements LoaderCallbac
         this.loaderConstant = loaderConstant;
         this.section = section;
         this.page = page;
-        Log.i(LOG_TAG, "in AbstractFragment constructor");
     }
 
     static class ViewHolder {
@@ -97,7 +99,7 @@ public abstract class AbstractFragment extends Fragment implements LoaderCallbac
     public void onStart() {
         super.onStart();
 
-        // startLoading(loaderConstant);
+        startLoading(loaderConstant);
 
     }
 
@@ -110,15 +112,12 @@ public abstract class AbstractFragment extends Fragment implements LoaderCallbac
 
     @Override
     public Loader<List<News>> onCreateLoader(int id, Bundle args) {
-
-
         return new NewsLoader(getActivity(), baseUrl, section, page);
     }
 
 
     @Override
     public void onLoaderReset(Loader<List<News>> loader) {
-
 
         clearAdapter();
     }
@@ -127,8 +126,7 @@ public abstract class AbstractFragment extends Fragment implements LoaderCallbac
     public void onLoadFinished(Loader<List<News>> loader, List<News> data) {
 
         clearAdapter();
-        enableEmptyView(true);
-
+        lostDataEmptyView();
 
         if (data != null && !data.isEmpty()) {
             showProgressBar(false);
@@ -145,8 +143,7 @@ public abstract class AbstractFragment extends Fragment implements LoaderCallbac
             viewHolder.listView.removeFooterView(viewHolder.footView);
             viewHolder.listView.addFooterView(viewHolder.footView);
         } else {
-            enableEmptyView(true);
-
+            lostDataEmptyView();
         }
     }
 
@@ -167,8 +164,7 @@ public abstract class AbstractFragment extends Fragment implements LoaderCallbac
             clearAdapter();
             getLoaderManager().restartLoader(loaderConstant, null, AbstractFragment.this).forceLoad();
         } else {
-            enableEmptyView(true);
-            setEmptyView(R.drawable.disconnect, "Check network connection!", "Try Again!");
+            lostInternetConnectionEmptyView();
 
         }
 
@@ -210,7 +206,7 @@ public abstract class AbstractFragment extends Fragment implements LoaderCallbac
         viewHolder.emptyViewButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                enableEmptyView(false);
                 startLoading(loaderConstant);
             }
         });
@@ -234,14 +230,19 @@ public abstract class AbstractFragment extends Fragment implements LoaderCallbac
         viewHolder.nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int temp = ++page;
-                Log.i(LOG_TAG, "temp " + temp);
-                Log.i(LOG_TAG, "max " + maxPage);
-                if (temp <= maxPage) {
-                    Log.i(LOG_TAG, "page: " + temp);
-                    startLoading(loaderConstant);
+                if (checkNetWorkConnection()) {
+                    int temp = ++page;
+                    Log.i(LOG_TAG, "temp " + temp);
+                    Log.i(LOG_TAG, "max " + maxPage);
+                    if (temp <= maxPage) {
+                        Log.i(LOG_TAG, "page: " + temp);
+                        startLoading(loaderConstant);
+                    } else {
+                        Toast.makeText(getContext(), "you are at the end of the list.", Toast.LENGTH_LONG).show();
+                    }
+
                 } else {
-                    Toast.makeText(getContext(), "you are at the end of the list.", Toast.LENGTH_LONG).show();
+                    lostInternetConnectionEmptyView();
                 }
             }
         });
@@ -249,11 +250,27 @@ public abstract class AbstractFragment extends Fragment implements LoaderCallbac
         viewHolder.previousButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int temp = --page;
-                if (temp >= 1) {
-                    startLoading(loaderConstant);
+                if (checkNetWorkConnection()) {
+                    int temp = --page;
+                    if (temp >= 1) {
+                        startLoading(loaderConstant);
+                    } else {
+                        Toast.makeText(getContext(), "you are at the beginning of the list.", Toast.LENGTH_LONG).show();
+                    }
                 } else {
-                    Toast.makeText(getContext(), "you are at the beginning of the list.", Toast.LENGTH_LONG).show();
+                    lostInternetConnectionEmptyView();
+                }
+            }
+        });
+
+        viewHolder.listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                News currentNews = adapter.getItem(position);
+                if (checkNetWorkConnection()) {
+                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(currentNews.getWebUrl())));
+                } else {
+                    lostInternetConnectionEmptyView();
                 }
             }
         });
@@ -291,4 +308,13 @@ public abstract class AbstractFragment extends Fragment implements LoaderCallbac
         outState.putInt("maxPage", maxPage);
     }
 
+    public void lostInternetConnectionEmptyView() {
+        enableEmptyView(true);
+        setEmptyView(R.drawable.disconnect, "Check network connection!", "Try Again!");
+    }
+
+    public void lostDataEmptyView() {
+        enableEmptyView(true);
+        setEmptyView(R.drawable.error, "Can't retrieve data !", "Try Again!");
+    }
 }
