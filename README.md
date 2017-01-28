@@ -1,5 +1,5 @@
 # NewsApp
-android app using Guardian News API, JSON parsing, Asyntaskloader, listview, view holder patter, adapter
+android app using Guardian News API, JSON parsing, AsyncTaskLoader, listview, view holder patter, adapter
 
 ![gif](https://github.com/jennifernghi/NewsApp/blob/master/app/gif/1.gif)
 </br>
