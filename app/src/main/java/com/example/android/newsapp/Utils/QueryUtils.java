@@ -206,7 +206,7 @@ public final class QueryUtils {
 
 
                 Bitmap thumbnail = null;
-                if (thumbnailUrl != null) {
+                if (thumbnailUrl != null && !thumbnailUrl.equals(context.getString(R.string.empty_string))) {
                     thumbnail = makeBitmap(thumbnailUrl);
                 }
 

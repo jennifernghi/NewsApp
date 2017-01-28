@@ -57,7 +57,12 @@ public class NewsAdapter extends ArrayAdapter<News> {
         viewHolder.trailTextTextView = (TextView) convertView.findViewById(R.id.trail_text);
 
         //set image view
-        viewHolder.newsThumbnailImageView.setImageBitmap(currentNews.getThumbnail());
+        if(currentNews.getThumbnail()!=null){
+            viewHolder.newsThumbnailImageView.setImageBitmap(currentNews.getThumbnail());
+        }else {
+            viewHolder.newsThumbnailImageView.setVisibility(View.GONE);
+        }
+
 
         //set headline
         viewHolder.headLineTextView.setText(currentNews.getHeadLine());
